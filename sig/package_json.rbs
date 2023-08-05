@@ -7,6 +7,8 @@ module PackageJson
 
   def fetch: (String key, ?untyped default) -> (String | Hash[String, untyped] | Array[untyped])
 
+  def mutate: () { (Hash[String, untyped]) -> void } -> void
+
   private
 
   def read_package_json: () -> void

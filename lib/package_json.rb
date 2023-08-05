@@ -20,9 +20,22 @@ class PackageJson
     end
   end
 
+  # Updates the `package.json` with the result of mutations to the current contents by the passed block
+  def mutate
+    contents = read_package_json
+
+    yield contents
+
+    write_package_json(contents)
+  end
+
   private
 
   def read_package_json
     JSON.parse(File.read(path))
+  end
+
+  def write_package_json(contents)
+    File.write(path, "#{JSON.pretty_generate(contents)}\n")
   end
 end
