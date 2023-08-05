@@ -1,0 +1,13 @@
+module PackageJson
+  VERSION: String
+
+  attr_reader path: String
+
+  def initialize: (String path_to_package_json) -> PackageJson
+
+  def fetch: (String key, ?untyped default) -> (String | Hash[String, untyped] | Array[untyped])
+
+  private
+
+  def read_package_json: () -> void
+end
