@@ -2,35 +2,9 @@
 
 require "spec_helper"
 
-class PackageJsonBuilder
-  # @return [String]
-  attr_reader :path
-
-  def initialize(path, contents)
-    @path = path
-    write(contents)
-  end
-
-  def write(contents)
-    File.write(path, "#{JSON.pretty_generate(contents)}\n")
-  end
-
-  def unlink
-    File.unlink(path)
-  end
-end
-
-def with_package_json_file(contents = {})
-  within_temp_directory do
-    builder = PackageJsonBuilder.new("package.json", contents)
-
-    yield(builder)
-  ensure
-    builder&.unlink
-  end
-end
-
 RSpec.describe PackageJson do
+  around { |example| within_temp_directory { example.run } }
+
   it "has a version number" do
     expect(PackageJson::VERSION).not_to be_nil
   end

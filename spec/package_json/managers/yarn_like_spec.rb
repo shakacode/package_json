@@ -19,6 +19,16 @@ RSpec.describe PackageJson::Managers::YarnLike do
     end
   end
 
+  describe "#install" do
+    it "runs" do
+      with_package_json_file do
+        manager.install
+
+        expect(Kernel).to have_received(:system).with(match(/#{package_manager_cmd} install/))
+      end
+    end
+  end
+
   describe "#add_and_install" do
     it "adds dependencies as production by default" do
       manager.add_and_install(["example"])
