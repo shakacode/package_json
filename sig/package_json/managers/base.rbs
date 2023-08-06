@@ -7,6 +7,8 @@ module PackageJson
 
       def add_and_install: (Array[String] packages, Symbol type, ?Array[String] opts) -> void
 
+      def remove: (Array[String] packages, ?Array[String] opts) -> void
+
       private
 
       @manager_cmd: String

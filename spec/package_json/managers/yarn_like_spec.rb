@@ -102,4 +102,25 @@ RSpec.describe PackageJson::Managers::YarnLike do
       end
     end
   end
+
+  describe "#remove" do
+    it "removes the package" do
+      with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
+        # yarn requires that a lockfile exist for remove to work
+        File.write("yarn.lock", "")
+
+        manager.remove(["example"])
+
+        expect(File.read("package.json")).to eq(
+          <<~JSON
+            {
+              "dependencies": {
+                "example2": "^0.0.0"
+              }
+            }
+          JSON
+        )
+      end
+    end
+  end
 end

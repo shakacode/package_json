@@ -9,6 +9,10 @@ class PackageJson
         run(opts, "add", [package_type_install_flag(type)] + packages)
       end
 
+      def remove(packages, opts = [])
+        run(opts, "remove", packages)
+      end
+
       private
 
       def package_type_install_flag(type)
