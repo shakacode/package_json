@@ -1,0 +1,9 @@
+module PackageJson
+  module Managers
+    class YarnLike < Base
+      private
+
+      def package_type_install_flag: (Symbol type) -> (String | nil)
+    end
+  end
+end

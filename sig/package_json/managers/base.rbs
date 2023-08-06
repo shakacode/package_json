@@ -1,0 +1,18 @@
+module PackageJson
+  module Managers
+    class Base
+      def initialize: (String manager_cmd, ?(PackageJson | nil) package_json) -> self
+
+      def install: (?Array[String] opts) -> void
+
+      def add_and_install: (Array[String] packages, Symbol type, ?Array[String] opts) -> void
+
+      private
+
+      @manager_cmd: String
+      @package_json: PackageJson | nil
+
+      def run: (Array[String] opts, String cmd, Array[String] args) -> void
+    end
+  end
+end

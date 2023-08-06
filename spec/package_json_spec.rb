@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "tmpdir"
 
 class PackageJsonBuilder
   # @return [String]
@@ -22,8 +21,8 @@ class PackageJsonBuilder
 end
 
 def with_package_json_file(contents = {})
-  Dir.mktmpdir("package_json-") do |dir|
-    builder = PackageJsonBuilder.new(File.join(dir, "package.json"), contents)
+  within_temp_directory do
+    builder = PackageJsonBuilder.new("package.json", contents)
 
     yield(builder)
   ensure
