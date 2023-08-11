@@ -1,6 +1,36 @@
-module PackageJson
+class PackageJson
   module Managers
     class YarnLike < Base
+      def initialize: (PackageJson package_json, ?manager_cmd: String) -> self
+
+      def install: (
+          ?frozen: bool,
+          ?ignore_scripts: bool,
+          ?legacy_peer_deps: bool,
+          ?omit_optional_deps: bool
+        ) -> void
+
+      def add: (
+          Array[String] packages,
+          ?type: :production | :dev | :optional | :peer,
+          ?ignore_scripts: bool,
+          ?legacy_peer_deps: bool,
+          ?omit_optional_deps: bool
+        ) -> void
+
+      def remove: (
+          Array[String] packages,
+          ?ignore_scripts: bool,
+          ?legacy_peer_deps: bool,
+          ?omit_optional_deps: bool
+        ) -> void
+
+      def run: (
+          String script_name,
+          ?Array[String] args,
+          ?silent: bool
+        ) -> void
+
       private
 
       def package_type_install_flag: (Symbol type) -> (String | nil)

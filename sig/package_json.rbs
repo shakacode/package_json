@@ -1,15 +1,24 @@
-module PackageJson
+class PackageJson
   VERSION: String
 
+  class Error < StandardError
+  end
+
+  class NotImplementedError < Error
+  end
+
+  attr_reader manager: Managers::Base
   attr_reader path: String
 
-  def initialize: (String path_to_package_json) -> PackageJson
+  def initialize: (?(:npm | :yarn_classic | :pnpm | nil) package_manager, ?String path_to_directory) -> PackageJson
 
   def fetch: (String key, ?untyped default) -> (String | Hash[String, untyped] | Array[untyped])
 
-  def mutate: () { (Hash[String, untyped]) -> void } -> void
+  def merge!: () { (Hash[String | Symbol, untyped]) -> Hash[String | Symbol, untyped] } -> void
 
   private
 
   def read_package_json: () -> void
+
+  def write_package_json: (_ToJson contents) -> void
 end

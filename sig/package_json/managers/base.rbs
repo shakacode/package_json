@@ -1,20 +1,42 @@
-module PackageJson
+class PackageJson
   module Managers
     class Base
-      def initialize: (String manager_cmd, ?(PackageJson | nil) package_json) -> self
+      def initialize: (PackageJson package_json, manager_cmd: String) -> self
 
-      def install: (?Array[String] opts) -> void
+      def install: (
+          ?frozen: bool,
+          ?ignore_scripts: bool,
+          ?legacy_peer_deps: bool,
+          ?omit_optional_deps: bool
+        ) -> void
 
-      def add_and_install: (Array[String] packages, Symbol type, ?Array[String] opts) -> void
+      def add: (
+          Array[String] packages,
+          ?type: :production | :dev | :optional | :peer,
+          ?ignore_scripts: bool,
+          ?legacy_peer_deps: bool,
+          ?omit_optional_deps: bool
+        ) -> void
 
-      def remove: (Array[String] packages, ?Array[String] opts) -> void
+      def remove: (
+          Array[String] packages,
+          ?ignore_scripts: bool,
+          ?legacy_peer_deps: bool,
+          ?omit_optional_deps: bool
+        ) -> void
+
+      def run: (
+          String script_name,
+          ?Array[String] args,
+          ?silent: bool
+        ) -> void
 
       private
 
       @manager_cmd: String
-      @package_json: PackageJson | nil
+      @package_json: PackageJson
 
-      def run: (Array[String] opts, String cmd, Array[String] args) -> void
+      def raw: (Array[String] opts, String cmd, Array[String] args) -> void
     end
   end
 end
