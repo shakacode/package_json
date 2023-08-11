@@ -30,53 +30,25 @@ RSpec.describe PackageJson do
       it "sets packageManager correctly when no fallback is explicitly provided" do
         described_class.new
 
-        expect(File.exist?("package.json")).to be(true)
-        expect(File.read("package.json")).to eq(
-          <<~JSON
-            {
-              "packageManager": "npm"
-            }
-          JSON
-        )
+        expect_package_json_with_content({ "packageManager" => "npm" })
       end
 
       it "sets packageManager correctly when the package manager is npm" do
         described_class.new(:npm)
 
-        expect(File.exist?("package.json")).to be(true)
-        expect(File.read("package.json")).to eq(
-          <<~JSON
-            {
-              "packageManager": "npm"
-            }
-          JSON
-        )
+        expect_package_json_with_content({ "packageManager" => "npm" })
       end
 
       it "sets packageManager correctly when the package manager is yarn (classic)" do
         described_class.new(:yarn_classic)
 
-        expect(File.exist?("package.json")).to be(true)
-        expect(File.read("package.json")).to eq(
-          <<~JSON
-            {
-              "packageManager": "yarn@1"
-            }
-          JSON
-        )
+        expect_package_json_with_content({ "packageManager" => "yarn@1" })
       end
 
       it "sets packageManager correctly when the package manager is pnpm" do
         described_class.new(:pnpm)
 
-        expect(File.exist?("package.json")).to be(true)
-        expect(File.read("package.json")).to eq(
-          <<~JSON
-            {
-              "packageManager": "pnpm"
-            }
-          JSON
-        )
+        expect_package_json_with_content({ "packageManager" => "pnpm" })
       end
 
       it "raises an error if the fallback manager is not supported" do
@@ -142,14 +114,7 @@ RSpec.describe PackageJson do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "pnpm" }) do
           described_class.new(:yarn_classic)
 
-          expect(File.read("package.json")).to eq(
-            <<~JSON
-              {
-                "version": "1.0.0",
-                "packageManager": "pnpm"
-              }
-            JSON
-          )
+          expect_package_json_with_content({ "version" => "1.0.0", "packageManager" => "pnpm" })
         end
       end
 
@@ -182,14 +147,7 @@ RSpec.describe PackageJson do
         with_package_json_file({ "version" => "1.0.0" }) do
           described_class.new(:yarn_classic)
 
-          expect(File.exist?("package.json")).to be(true)
-          expect(File.read("package.json")).to eq(
-            <<~JSON
-              {
-                "version": "1.0.0"
-              }
-            JSON
-          )
+          expect_package_json_with_content({ "version" => "1.0.0" })
         end
       end
 
@@ -263,14 +221,10 @@ RSpec.describe PackageJson do
 
         package_json.merge! { |_| { "name" => "my package" } }
 
-        expect(File.read("package.json")).to eq(
-          <<~JSON
-            {
-              "version": "1.0.0",
-              "name": "my package"
-            }
-          JSON
-        )
+        expect_package_json_with_content({
+          "version" => "1.0.0",
+          "name" => "my package"
+        })
       end
     end
 
@@ -280,16 +234,12 @@ RSpec.describe PackageJson do
 
         package_json.merge! { |_| { "scripts" => { "lint" => "eslint ." } } }
 
-        expect(File.read("package.json")).to eq(
-          <<~JSON
-            {
-              "version": "1.0.0",
-              "scripts": {
-                "lint": "eslint ."
-              }
-            }
-          JSON
-        )
+        expect_package_json_with_content({
+          "version" => "1.0.0",
+          "scripts" => {
+            "lint" => "eslint ."
+          }
+        })
       end
     end
 
@@ -306,18 +256,14 @@ RSpec.describe PackageJson do
           }
         end
 
-        expect(File.read("package.json")).to eq(
-          <<~JSON
-            {
-              "version": "1.0.0",
-              "scripts": {
-                "test": "exit 1",
-                "lint": "eslint . --ext js",
-                "format": "prettier --check ."
-              }
-            }
-          JSON
-        )
+        expect_package_json_with_content({
+          "version" => "1.0.0",
+          "scripts" => {
+            "test" => "exit 1",
+            "lint" => "eslint . --ext js",
+            "format" => "prettier --check ."
+          }
+        })
       end
     end
   end

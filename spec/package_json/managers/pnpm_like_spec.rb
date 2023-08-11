@@ -2,10 +2,6 @@
 
 require "spec_helper"
 
-def expect_manager_to_be_invoked_with(args)
-  expect(Kernel).to have_received(:system).with(match(/#{package_manager_cmd} #{args}/))
-end
-
 RSpec.describe PackageJson::Managers::PnpmLike do
   subject(:manager) { described_class.new(package_json, manager_cmd: package_manager_cmd) }
 
@@ -15,13 +11,10 @@ RSpec.describe PackageJson::Managers::PnpmLike do
   around { |example| within_temp_directory { example.run } }
 
   before do
-    # make things quieter by default
-    ENV["NPM_CONFIG_LOGLEVEL"] = "silent"
-    ENV["NPM_CONFIG_PROGRESS"] = "false"
-    # make things a bit faster by skipping node_modules
-    ENV["NPM_CONFIG_LOCKFILE_ONLY"] = "true"
-
-    allow(Kernel).to receive(:system).and_call_original
+    allow(Kernel).to receive(:system).and_wrap_original do |original_method, *args|
+      # make things quieter by redirecting output to /dev/null
+      original_method.call(*args, 1 => "/dev/null", 2 => "/dev/null")
+    end
   end
 
   describe "#install" do
@@ -93,7 +86,11 @@ RSpec.describe PackageJson::Managers::PnpmLike do
         manager.add(["example"])
 
         expect_manager_to_be_invoked_with("add --save-prod example")
-        expect(File.read("package.json")).to eq("{\"dependencies\":{\"example\":\"^0.0.0\"}}\n")
+        expect_package_json_with_content({
+          "dependencies" => {
+            "example" => "^0.0.0"
+          }
+        })
       end
     end
 
@@ -102,7 +99,11 @@ RSpec.describe PackageJson::Managers::PnpmLike do
         manager.add(["example"], type: :production)
 
         expect_manager_to_be_invoked_with("add --save-prod example")
-        expect(File.read("package.json")).to eq("{\"dependencies\":{\"example\":\"^0.0.0\"}}\n")
+        expect_package_json_with_content({
+          "dependencies" => {
+            "example" => "^0.0.0"
+          }
+        })
       end
     end
 
@@ -111,7 +112,11 @@ RSpec.describe PackageJson::Managers::PnpmLike do
         manager.add(["example"], type: :dev)
 
         expect_manager_to_be_invoked_with("add --save-dev example")
-        expect(File.read("package.json")).to eq("{\"devDependencies\":{\"example\":\"^0.0.0\"}}\n")
+        expect_package_json_with_content({
+          "devDependencies" => {
+            "example" => "^0.0.0"
+          }
+        })
       end
     end
 
@@ -120,7 +125,11 @@ RSpec.describe PackageJson::Managers::PnpmLike do
         manager.add(["example"], type: :optional)
 
         expect_manager_to_be_invoked_with("add --save-optional example")
-        expect(File.read("package.json")).to eq("{\"optionalDependencies\":{\"example\":\"^0.0.0\"}}\n")
+        expect_package_json_with_content({
+          "optionalDependencies" => {
+            "example" => "^0.0.0"
+          }
+        })
       end
     end
 
@@ -181,15 +190,11 @@ RSpec.describe PackageJson::Managers::PnpmLike do
       with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
         manager.remove(["example"])
 
-        expect(File.read("package.json")).to eq(
-          <<~JSON
-            {
-              "dependencies": {
-                "example2": "^0.0.0"
-              }
-            }
-          JSON
-        )
+        expect_package_json_with_content({
+          "dependencies" => {
+            "example2" => "^0.0.0"
+          }
+        })
       end
     end
 
@@ -235,10 +240,6 @@ RSpec.describe PackageJson::Managers::PnpmLike do
 
   describe "#run" do
     before do
-      allow(Kernel).to receive(:system).and_wrap_original do |original_method, *args|
-        original_method.call(*args, 2 => "/dev/null", 1 => "/dev/null")
-      end
-
       File.write("helper.rb", 'File.write("package_json_run_script_helper.txt", ARGV)')
     end
 

@@ -11,6 +11,7 @@ end
 require "package_json"
 
 require "./spec/support/package_json_builder"
+require "./spec/support/expect_helpers"
 require "./spec/support/temp_helpers"
 
 RSpec.configure do |config|

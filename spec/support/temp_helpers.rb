@@ -11,5 +11,7 @@ def with_package_json_file(contents = {})
 
   yield(builder)
 ensure
+  # :nocov:
   builder&.unlink
+  # :nocov:
 end
