@@ -14,24 +14,27 @@ class PackageJson
 
   attr_reader :manager, :path
 
-  def initialize(package_manager = nil, path_to_directory = Dir.pwd)
+  def initialize(fallback_manager = :npm, path_to_directory = Dir.pwd)
     @path = path_to_directory
 
-    ensure_package_json_exists(package_manager)
+    ensure_package_json_exists(fallback_manager)
 
-    # package_manager = determine_package_manager if package_manager.nil?
-
-    # @manager = new_package_manager(package_manager)
+    @manager = new_package_manager(determine_package_manager(fallback_manager))
   end
 
-  def determine_package_manager
-    return :npm unless File.exist?(package_json_path)
+  def determine_package_manager(fallback_manager)
+    package_manager = fetch("packageManager", nil)
 
-    package_manager = fetch("packageManager", "npm")
+    return fallback_manager if package_manager.nil?
 
     name, version = package_manager.split("@")
 
-    return :yarn_classic if name == "yarn" && version&.start_with?("1")
+    if name == "yarn"
+      raise Error, "a major version must be present for Yarn" if version.nil? || version.empty?
+      raise Error, "only Yarn classic is supported" unless version.start_with?("1")
+
+      return :yarn_classic
+    end
 
     name.to_sym
   end
@@ -75,14 +78,10 @@ class PackageJson
   def ensure_package_json_exists(package_manager)
     return if File.exist?(package_json_path)
 
-    pj = {}
+    pm = package_manager.to_s
+    pm = "yarn@1" if package_manager == :yarn_classic
 
-    unless package_manager.nil?
-      pj["packageManager"] = package_manager.to_s
-      pj["packageManager"] = "yarn@1" if package_manager == :yarn_classic
-    end
-
-    write_package_json(pj)
+    write_package_json({ "packageManager" => pm })
   end
 
   def read_package_json

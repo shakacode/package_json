@@ -89,63 +89,39 @@ RSpec.describe PackageJson::Managers::NpmLike do
 
   describe "#add" do
     it "adds dependencies as production by default" do
-      manager.add(["example"])
+      with_package_json_file do
+        manager.add(["example"])
 
-      expect_manager_to_be_invoked_with("install --save-prod example")
-      expect(File.read("package.json")).to eq(
-        <<~JSON
-          {
-            "dependencies": {
-              "example": "^0.0.0"
-            }
-          }
-        JSON
-      )
+        expect_manager_to_be_invoked_with("install --save-prod example")
+        expect(File.read("package.json")).to eq("{\"dependencies\":{\"example\":\"^0.0.0\"}}\n")
+      end
     end
 
     it "supports adding production dependencies" do
-      manager.add(["example"], type: :production)
+      with_package_json_file do
+        manager.add(["example"], type: :production)
 
-      expect_manager_to_be_invoked_with("install --save-prod example")
-      expect(File.read("package.json")).to eq(
-        <<~JSON
-          {
-            "dependencies": {
-              "example": "^0.0.0"
-            }
-          }
-        JSON
-      )
+        expect_manager_to_be_invoked_with("install --save-prod example")
+        expect(File.read("package.json")).to eq("{\"dependencies\":{\"example\":\"^0.0.0\"}}\n")
+      end
     end
 
     it "supports adding dev dependencies" do
-      manager.add(["example"], type: :dev)
+      with_package_json_file do
+        manager.add(["example"], type: :dev)
 
-      expect_manager_to_be_invoked_with("install --save-dev example")
-      expect(File.read("package.json")).to eq(
-        <<~JSON
-          {
-            "devDependencies": {
-              "example": "^0.0.0"
-            }
-          }
-        JSON
-      )
+        expect_manager_to_be_invoked_with("install --save-dev example")
+        expect(File.read("package.json")).to eq("{\"devDependencies\":{\"example\":\"^0.0.0\"}}\n")
+      end
     end
 
     it "supports adding optional dependencies" do
-      manager.add(["example"], type: :optional)
+      with_package_json_file do
+        manager.add(["example"], type: :optional)
 
-      expect_manager_to_be_invoked_with("install --save-optional example")
-      expect(File.read("package.json")).to eq(
-        <<~JSON
-          {
-            "optionalDependencies": {
-              "example": "^0.0.0"
-            }
-          }
-        JSON
-      )
+        expect_manager_to_be_invoked_with("install --save-optional example")
+        expect(File.read("package.json")).to eq("{\"optionalDependencies\":{\"example\":\"^0.0.0\"}}\n")
+      end
     end
 
     context "when the package manager errors" do

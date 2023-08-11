@@ -19,9 +19,22 @@ RSpec.describe PackageJson do
         described_class.new
 
         expect(File.exist?("package.json")).to be(true)
+      end
+
+      it "defaults to npm as the package manager" do
+        package_json = described_class.new
+
+        expect(package_json.manager).to be_a PackageJson::Managers::NpmLike
+      end
+
+      it "sets packageManager correctly when no fallback is explicitly provided" do
+        described_class.new
+
+        expect(File.exist?("package.json")).to be(true)
         expect(File.read("package.json")).to eq(
           <<~JSON
             {
+              "packageManager": "npm"
             }
           JSON
         )
@@ -65,25 +78,126 @@ RSpec.describe PackageJson do
           JSON
         )
       end
+
+      it "raises an error if the fallback manager is not supported" do
+        expect { described_class.new(:unknown) }.to raise_error(
+          PackageJson::Error,
+          'unsupported package manager "unknown"'
+        )
+      end
     end
 
-    context "when the package.json already exists" do
+    context "when the package.json already exists with the packageManager property" do
       it "does not error" do
         with_package_json_file({ "version" => "1.0.0" }) do
           expect { described_class.new }.not_to raise_error
         end
       end
 
-      it "does nothing" do
-        with_package_json_file({ "version" => "1.0.0" }) do
-          described_class.new
+      it "uses the packageManager property" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "pnpm" }) do
+          package_json = described_class.new
 
+          expect(package_json.manager).to be_a PackageJson::Managers::PnpmLike
+        end
+      end
+
+      it "ignores the fallback manager" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "pnpm" }) do
+          package_json = described_class.new(:yarn_classic)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::PnpmLike
+        end
+      end
+
+      it "supports having a version specified" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "pnpm@1.2.3" }) do
+          package_json = described_class.new
+
+          expect(package_json.manager).to be_a PackageJson::Managers::PnpmLike
+        end
+      end
+
+      it "requires a major version for yarn" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn" }) do
+          expect { described_class.new }.to raise_error(PackageJson::Error, "a major version must be present for Yarn")
+        end
+      end
+
+      it "only supports yarn v1" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@2" }) do
+          expect { described_class.new }.to raise_error(PackageJson::Error, "only Yarn classic is supported")
+        end
+      end
+
+      it "supports a full version being specified for yarn" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@1.2.3" }) do
+          package_json = described_class.new
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnLike
+        end
+      end
+
+      it "does not change the packageManager property" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "pnpm" }) do
+          described_class.new(:yarn_classic)
+
+          expect(File.read("package.json")).to eq(
+            <<~JSON
+              {
+                "version": "1.0.0",
+                "packageManager": "pnpm"
+              }
+            JSON
+          )
+        end
+      end
+
+      it "raises an error if the package manager is not supported" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "unknown" }) do
+          expect { described_class.new }.to raise_error(
+            PackageJson::Error,
+            'unsupported package manager "unknown"'
+          )
+        end
+      end
+    end
+
+    context "when the package.json already exists without the packageManager property" do
+      it "does not error" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          expect { described_class.new }.not_to raise_error
+        end
+      end
+
+      it "uses the fallback manager" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          package_json = described_class.new(:yarn_classic)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnLike
+        end
+      end
+
+      it "does not add the packageManager property" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          described_class.new(:yarn_classic)
+
+          expect(File.exist?("package.json")).to be(true)
           expect(File.read("package.json")).to eq(
             <<~JSON
               {
                 "version": "1.0.0"
               }
             JSON
+          )
+        end
+      end
+
+      it "raises an error if the fallback manager is not supported" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          expect { described_class.new(:unknown) }.to raise_error(
+            PackageJson::Error,
+            'unsupported package manager "unknown"'
           )
         end
       end

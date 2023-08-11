@@ -10,7 +10,7 @@ class PackageJson
   attr_reader manager: Managers::Base
   attr_reader path: String
 
-  def initialize: (?(:npm | :yarn_classic | :pnpm | nil) package_manager, ?String path_to_directory) -> PackageJson
+  def initialize: (?(:npm | :yarn_classic | :pnpm) package_manager, ?String path_to_directory) -> PackageJson
 
   def fetch: (String key, ?untyped default) -> (String | Hash[String, untyped] | Array[untyped])
 
@@ -22,7 +22,7 @@ class PackageJson
 
   def package_json_path: () -> String
 
-  def ensure_package_json_exists: ((:npm | :yarn_classic | :pnpm | nil) package_manager) -> void
+  def ensure_package_json_exists: ((:npm | :yarn_classic | :pnpm) package_manager) -> void
 
   def read_package_json: () -> void
 

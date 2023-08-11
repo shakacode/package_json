@@ -64,9 +64,9 @@ sources such as package managers, `PackageJson` reads and writes to and from the
 `package.json` as needed rather than representing it in memory.
 
 A `PackageJson` also comes with a `manager` that can be used to manage
-dependencies and run scripts. By default, the package manager will be inferred
-from the [`packageManager`](https://nodejs.org/api/packages.html#packagemanager)
-property in the `package.json`, falling back to `npm` if it is not present.
+dependencies and run scripts. The manager will be inferred by the
+[`packageManager`](https://nodejs.org/api/packages.html#packagemanager) property
+in the `package.json`.
 
 > **Note**
 >
@@ -78,18 +78,19 @@ property in the `package.json`, falling back to `npm` if it is not present.
 > `package.json`, and it is up to the developer to ensure that results in the
 > desired package manager actually running.
 
-You can override this by passing in the name of a supported package manager as a
-symbol as the first argument:
+You can specify a fallback package manager to use in-case the `package.json`
+does not exist or does not have the `packageManager` property:
 
 ```ruby
 PackageJson.new(:yarn_classic)
 ```
 
-Supported package managers are `:npm`, `:yarn_classic`, and `:pnpm`.
+The default fallback is `:npm`; supported package managers are `:npm`,
+`:yarn_classic`, and `:pnpm`.
 
 If the `package.json` does not exist, then the `packageManager` property will be
-included based on this value, but it will _not_ be updated if it does exist and
-a different value is provided.
+included based on this value, but it will _not_ be updated if the file already
+exists without the property.
 
 > TODO: providing a class
 
