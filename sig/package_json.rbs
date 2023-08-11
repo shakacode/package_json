@@ -18,6 +18,12 @@ class PackageJson
 
   private
 
+  @path: String
+
+  def package_json_path: () -> String
+
+  def ensure_package_json_exists: ((:npm | :yarn_classic | :pnpm | nil) package_manager) -> void
+
   def read_package_json: () -> void
 
   def write_package_json: (_ToJson contents) -> void

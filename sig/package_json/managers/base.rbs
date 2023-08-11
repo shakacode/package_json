@@ -36,7 +36,7 @@ class PackageJson
       @manager_cmd: String
       @package_json: PackageJson
 
-      def raw: (Array[String] opts, String cmd, Array[String] args) -> void
+      def raw: (String cmd, Array[String] args) -> void
     end
   end
 end

@@ -2,11 +2,15 @@
 
 require "spec_helper"
 
+def expect_manager_to_be_invoked_with(args)
+  expect(Kernel).to have_received(:system).with(match(/#{package_manager_cmd} #{args}/))
+end
+
 RSpec.describe PackageJson::Managers::NpmLike do
-  subject(:manager) { described_class.new(package_manager_cmd, package_json) }
+  subject(:manager) { described_class.new(package_json, manager_cmd: package_manager_cmd) }
 
   let(:package_manager_cmd) { "npx npm@9" }
-  let(:package_json) { PackageJson.new("package.json") }
+  let(:package_json) { PackageJson.new }
 
   around { |example| within_temp_directory { example.run } }
 
@@ -25,16 +29,69 @@ RSpec.describe PackageJson::Managers::NpmLike do
       with_package_json_file do
         manager.install
 
-        expect(Kernel).to have_received(:system).with(match(/#{package_manager_cmd} install/))
+        expect_manager_to_be_invoked_with("install")
+      end
+    end
+
+    context "when passing the usual options" do
+      it "supports frozen" do
+        with_package_json_file do
+          # frozen requires that a lockfile exist
+          File.write("package-lock.json", "{}")
+
+          manager.install(frozen: true)
+
+          expect_manager_to_be_invoked_with("ci")
+        end
+      end
+
+      it "supports ignore_scripts" do
+        with_package_json_file do
+          manager.install(ignore_scripts: true)
+
+          expect_manager_to_be_invoked_with("install --ignore-scripts")
+        end
+      end
+
+      it "supports legacy_peer_deps" do
+        with_package_json_file do
+          manager.install(legacy_peer_deps: true)
+
+          expect_manager_to_be_invoked_with("install --legacy-peer-deps")
+        end
+      end
+
+      it "supports omit_optional_deps" do
+        with_package_json_file do
+          manager.install(omit_optional_deps: true)
+
+          expect_manager_to_be_invoked_with("install --omit=optional")
+        end
+      end
+
+      it "supports all the options together" do
+        with_package_json_file do
+          # frozen requires that a lockfile exist
+          File.write("package-lock.json", "{}")
+
+          manager.install(
+            frozen: true,
+            ignore_scripts: true,
+            legacy_peer_deps: true,
+            omit_optional_deps: true
+          )
+
+          expect_manager_to_be_invoked_with("ci --ignore-scripts --legacy-peer-deps --omit=optional")
+        end
       end
     end
   end
 
-  describe "#add_and_install" do
+  describe "#add" do
     it "adds dependencies as production by default" do
-      manager.add_and_install(["example"])
+      manager.add(["example"])
 
-      expect(Kernel).to have_received(:system).with(match(/#{package_manager_cmd} install --save-prod example/))
+      expect_manager_to_be_invoked_with("install --save-prod example")
       expect(File.read("package.json")).to eq(
         <<~JSON
           {
@@ -47,9 +104,9 @@ RSpec.describe PackageJson::Managers::NpmLike do
     end
 
     it "supports adding production dependencies" do
-      manager.add_and_install(["example"], :production)
+      manager.add(["example"], type: :production)
 
-      expect(Kernel).to have_received(:system).with(match(/#{package_manager_cmd} install --save-prod example/))
+      expect_manager_to_be_invoked_with("install --save-prod example")
       expect(File.read("package.json")).to eq(
         <<~JSON
           {
@@ -62,9 +119,9 @@ RSpec.describe PackageJson::Managers::NpmLike do
     end
 
     it "supports adding dev dependencies" do
-      manager.add_and_install(["example"], :dev)
+      manager.add(["example"], type: :dev)
 
-      expect(Kernel).to have_received(:system).with(match(/#{package_manager_cmd} install --save-dev example/))
+      expect_manager_to_be_invoked_with("install --save-dev example")
       expect(File.read("package.json")).to eq(
         <<~JSON
           {
@@ -77,9 +134,9 @@ RSpec.describe PackageJson::Managers::NpmLike do
     end
 
     it "supports adding optional dependencies" do
-      manager.add_and_install(["example"], :optional)
+      manager.add(["example"], type: :optional)
 
-      expect(Kernel).to have_received(:system).with(match(/#{package_manager_cmd} install --save-optional example/))
+      expect_manager_to_be_invoked_with("install --save-optional example")
       expect(File.read("package.json")).to eq(
         <<~JSON
           {
@@ -93,13 +150,54 @@ RSpec.describe PackageJson::Managers::NpmLike do
 
     context "when the package manager errors" do
       it "raises an error" do
-        expect { manager.add_and_install(["does-not-exist"]) }.to raise_error(PackageJson::Error)
+        expect { manager.add(["does-not-exist"]) }.to raise_error(PackageJson::Error)
       end
     end
 
     context "when the group type is not supported" do
       it "raises an error" do
-        expect { manager.add_and_install([], :unknown) }.to raise_error(PackageJson::Error)
+        expect { manager.add([], type: :unknown) }.to raise_error(PackageJson::Error)
+      end
+    end
+
+    context "when passing the usual options" do
+      it "supports ignore_scripts" do
+        with_package_json_file do
+          manager.add(["example"], ignore_scripts: true)
+
+          expect_manager_to_be_invoked_with("install --save-prod --ignore-scripts example")
+        end
+      end
+
+      it "supports legacy_peer_deps" do
+        with_package_json_file do
+          manager.add(["example"], legacy_peer_deps: true)
+
+          expect_manager_to_be_invoked_with("install --save-prod --legacy-peer-deps example")
+        end
+      end
+
+      it "supports omit_optional_deps" do
+        with_package_json_file do
+          manager.add(["example"], omit_optional_deps: true)
+
+          expect_manager_to_be_invoked_with("install --save-prod --omit=optional example")
+        end
+      end
+
+      it "supports all the options together" do
+        with_package_json_file do
+          manager.add(
+            ["example"],
+            ignore_scripts: true,
+            legacy_peer_deps: true,
+            omit_optional_deps: true
+          )
+
+          expect_manager_to_be_invoked_with(
+            "install --save-prod --ignore-scripts --legacy-peer-deps --omit=optional example"
+          )
+        end
       end
     end
   end
@@ -109,6 +207,7 @@ RSpec.describe PackageJson::Managers::NpmLike do
       with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
         manager.remove(["example"])
 
+        expect_manager_to_be_invoked_with("remove example")
         expect(File.read("package.json")).to eq(
           <<~JSON
             {
@@ -118,6 +217,97 @@ RSpec.describe PackageJson::Managers::NpmLike do
             }
           JSON
         )
+      end
+    end
+
+    context "when passing the usual options" do
+      it "supports ignore_scripts" do
+        with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
+          manager.remove(["example"], ignore_scripts: true)
+
+          expect_manager_to_be_invoked_with("remove --ignore-scripts example")
+        end
+      end
+
+      it "supports legacy_peer_deps" do
+        with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
+          manager.remove(["example"], legacy_peer_deps: true)
+
+          expect_manager_to_be_invoked_with("remove --legacy-peer-deps example")
+        end
+      end
+
+      it "supports omit_optional_deps" do
+        with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
+          manager.remove(["example"], omit_optional_deps: true)
+
+          expect_manager_to_be_invoked_with("remove --omit=optional example")
+        end
+      end
+
+      it "supports all the options together" do
+        with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
+          manager.remove(
+            ["example"],
+            ignore_scripts: true,
+            legacy_peer_deps: true,
+            omit_optional_deps: true
+          )
+
+          expect_manager_to_be_invoked_with("remove --ignore-scripts --legacy-peer-deps --omit=optional example")
+        end
+      end
+    end
+  end
+
+  describe "#run" do
+    before do
+      File.write("helper.rb", 'File.write("package_json_run_script_helper.txt", ARGV)')
+    end
+
+    it "runs the script" do
+      with_package_json_file({ "scripts" => { "rspec-test-helper" => "ruby helper.rb" } }) do
+        manager.run("rspec-test-helper")
+
+        expect_manager_to_be_invoked_with("run rspec-test-helper --")
+        expect(File.read("package_json_run_script_helper.txt")).to eq("[]")
+      end
+    end
+
+    it "passes args correctly" do
+      with_package_json_file({ "scripts" => { "rspec-test-helper" => "ruby helper.rb" } }) do
+        manager.run("rspec-test-helper", ["--silent", "--flag", "value"])
+
+        expect_manager_to_be_invoked_with("run rspec-test-helper -- --silent --flag value")
+        expect(File.read("package_json_run_script_helper.txt")).to eq('["--silent", "--flag", "value"]')
+      end
+    end
+
+    context "when the script is not there" do
+      it "raises an error" do
+        with_package_json_file do
+          expect { manager.run("rspec-test-helper") }.to raise_error(PackageJson::Error)
+
+          expect_manager_to_be_invoked_with("run rspec-test-helper --")
+        end
+      end
+    end
+
+    it "supports the silent option" do
+      with_package_json_file({ "scripts" => { "rspec-test-helper" => "ruby helper.rb" } }) do
+        manager.run("rspec-test-helper", silent: true)
+
+        expect_manager_to_be_invoked_with("run --silent rspec-test-helper --")
+        expect(File.read("package_json_run_script_helper.txt")).to eq("[]")
+      end
+    end
+
+    it "supports the silent option with args" do
+      with_package_json_file({ "scripts" => { "rspec-test-helper" => "ruby helper.rb" } }) do
+        manager.run("rspec-test-helper", ["--silent", "value", "--flag"], silent: true)
+
+        expect_manager_to_be_invoked_with("run --silent rspec-test-helper -- --silent value --flag")
+        expect(File.read("package_json_run_script_helper.txt")).to eq('["--silent", "value", "--flag"]')
       end
     end
   end
