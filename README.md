@@ -45,9 +45,9 @@ package_json.manager.add(%w[eslint prettier], :dev)
 # adds the "lint" and "format" scripts, preserving any existing scripts
 package_json.merge! do |pj|
   {
-    scripts: pj.fetch("scripts", {}).merge({
-      lint: "eslint . --ext js",
-      format: "prettier --check ."
+    "scripts" => pj.fetch("scripts", {}).merge({
+      "lint" => "eslint . --ext js",
+      "format" => "prettier --check ."
     })
   }
 end
