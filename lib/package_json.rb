@@ -14,7 +14,11 @@ class PackageJson
 
   attr_reader :manager, :path
 
-  def self.read(path_to_directory = Dir.pwd, fallback_manager: :npm)
+  def self.fetch_default_fallback_manager
+    ENV.fetch("PACKAGE_JSON_FALLBACK_MANAGER", "npm").to_sym
+  end
+
+  def self.read(path_to_directory = Dir.pwd, fallback_manager: PackageJson.fetch_default_fallback_manager)
     unless File.exist?("#{path_to_directory}/package.json")
       raise Error, "#{path_to_directory} does not contain a package.json"
     end
@@ -22,7 +26,7 @@ class PackageJson
     new(path_to_directory, fallback_manager: fallback_manager)
   end
 
-  def initialize(path_to_directory = Dir.pwd, fallback_manager: :npm)
+  def initialize(path_to_directory = Dir.pwd, fallback_manager: PackageJson.fetch_default_fallback_manager)
     @path = path_to_directory
 
     ensure_package_json_exists(fallback_manager)

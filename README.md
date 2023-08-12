@@ -90,8 +90,11 @@ does not exist or does not have the `packageManager` property:
 PackageJson.new(fallback_manager: :yarn_classic)
 ```
 
-The default fallback is `:npm`; supported package managers are `:npm`,
-`:yarn_classic`, and `:pnpm`.
+If a fallback manager is not defined, then the value of the env variable
+`PACKAGE_JSON_FALLBACK_MANAGER` will be used if set, or otherwise falling back
+to `npm`.
+
+Supported package managers are `:npm`, `:yarn_classic`, and `:pnpm`.
 
 If the `package.json` does not exist, then the `packageManager` property will be
 included based on this value, but it will _not_ be updated if the file already

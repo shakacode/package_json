@@ -10,6 +10,8 @@ class PackageJson
   attr_reader manager: Managers::Base
   attr_reader path: String
 
+  def self.fetch_default_fallback_manager: () -> Symbol
+
   def self.read: (?String path_to_directory, ?package_manager: (:npm | :yarn_classic | :pnpm)) -> PackageJson
 
   def initialize: (?String path_to_directory, ?package_manager: (:npm | :yarn_classic | :pnpm)) -> PackageJson
