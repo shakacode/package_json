@@ -56,12 +56,21 @@ end
 package_json.manager.run("lint", ["--fix"])
 ```
 
-The `PackageJson` class represents a `package.json` on disk within a directory,
-creating the file if it does not already exist.
-
-Because it is expected that the `package.json` might be changed by external
+The `PackageJson` class represents a `package.json` on disk within a directory;
+because it is expected that the `package.json` might be changed by external
 sources such as package managers, `PackageJson` reads and writes to and from the
 `package.json` as needed rather than representing it in memory.
+
+You can initialize a `PackageJson` with either `new` or `read` depending on if
+you want to ensure the `package.json` exists or throw if it doesn't:
+
+```ruby
+# this will create the `package.json` if it does not exist
+PackageJson.new(:npm, "path/to/directory")
+
+# this will error if the `package.json` does not exist
+PackageJson.read("path/to/directory", :npm)
+```
 
 A `PackageJson` also comes with a `manager` that can be used to manage
 dependencies and run scripts. The manager will be inferred by the

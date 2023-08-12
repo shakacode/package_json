@@ -14,6 +14,14 @@ class PackageJson
 
   attr_reader :manager, :path
 
+  def self.read(path_to_directory = Dir.pwd, fallback_manager = :npm)
+    unless File.exist?("#{path_to_directory}/package.json")
+      raise Error, "#{path_to_directory} does not contain a package.json"
+    end
+
+    new(fallback_manager, path_to_directory)
+  end
+
   def initialize(fallback_manager = :npm, path_to_directory = Dir.pwd)
     @path = path_to_directory
 

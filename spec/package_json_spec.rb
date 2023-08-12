@@ -9,6 +9,118 @@ RSpec.describe PackageJson do
     expect(PackageJson::VERSION).not_to be_nil
   end
 
+  describe ".read" do
+    context "when the package.json does not exist" do
+      it "raises an error" do
+        expect { described_class.read }.to raise_error(
+          PackageJson::Error, "#{Dir.pwd} does not contain a package.json"
+        )
+      end
+    end
+
+    context "when the package.json already exists with the packageManager property" do
+      it "does not error" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          expect { described_class.read }.not_to raise_error
+        end
+      end
+
+      it "uses the packageManager property" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "pnpm" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).to be_a PackageJson::Managers::PnpmLike
+        end
+      end
+
+      it "ignores the fallback manager" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "pnpm" }) do
+          package_json = described_class.read(Dir.pwd, :yarn_classic)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::PnpmLike
+        end
+      end
+
+      it "supports having a version specified" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "pnpm@1.2.3" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).to be_a PackageJson::Managers::PnpmLike
+        end
+      end
+
+      it "requires a major version for yarn" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn" }) do
+          expect { described_class.read }.to raise_error(PackageJson::Error, "a major version must be present for Yarn")
+        end
+      end
+
+      it "only supports yarn v1" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@2" }) do
+          expect { described_class.read }.to raise_error(PackageJson::Error, "only Yarn classic is supported")
+        end
+      end
+
+      it "supports a full version being specified for yarn" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@1.2.3" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "does not change the packageManager property" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "pnpm" }) do
+          described_class.read(Dir.pwd, :yarn_classic)
+
+          expect_package_json_with_content({ "version" => "1.0.0", "packageManager" => "pnpm" })
+        end
+      end
+
+      it "raises an error if the package manager is not supported" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "unknown" }) do
+          expect { described_class.read }.to raise_error(
+            PackageJson::Error,
+            'unsupported package manager "unknown"'
+          )
+        end
+      end
+    end
+
+    context "when the package.json already exists without the packageManager property" do
+      it "does not error" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          expect { described_class.read }.not_to raise_error
+        end
+      end
+
+      it "uses the fallback manager" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          package_json = described_class.read(Dir.pwd, :yarn_classic)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "does not add the packageManager property" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          described_class.read(Dir.pwd, :yarn_classic)
+
+          expect_package_json_with_content({ "version" => "1.0.0" })
+        end
+      end
+
+      it "raises an error if the fallback manager is not supported" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          expect { described_class.read(Dir.pwd, :unknown) }.to raise_error(
+            PackageJson::Error,
+            'unsupported package manager "unknown"'
+          )
+        end
+      end
+    end
+  end
+
   describe ".new" do
     context "when the package.json does not exist" do
       it "does not error" do
