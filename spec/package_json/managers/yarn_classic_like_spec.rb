@@ -13,7 +13,7 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
   before do
     allow(Kernel).to receive(:system).and_wrap_original do |original_method, *args|
       # make things quieter by redirecting output to /dev/null
-      original_method.call(*args, 1 => "/dev/null", 2 => "/dev/null")
+      original_method.call(*args, 1 => File::NULL, 2 => File::NULL)
     end
   end
 
