@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe PackageJson::Managers::YarnLike do
+RSpec.describe PackageJson::Managers::YarnClassicLike do
   subject(:manager) { described_class.new(package_json, manager_cmd: package_manager_cmd) }
 
   let(:package_manager_cmd) { "npx yarn@1" }

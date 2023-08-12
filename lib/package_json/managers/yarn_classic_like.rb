@@ -1,6 +1,6 @@
 class PackageJson
   module Managers
-    class YarnLike < Base
+    class YarnClassicLike < Base
       def initialize(package_json, manager_cmd: "yarn")
         super(package_json, manager_cmd: manager_cmd)
       end

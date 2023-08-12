@@ -106,7 +106,7 @@ RSpec.describe PackageJson do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@1.2.3" }) do
           package_json = described_class.new
 
-          expect(package_json.manager).to be_a PackageJson::Managers::YarnLike
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
         end
       end
 
@@ -139,7 +139,7 @@ RSpec.describe PackageJson do
         with_package_json_file({ "version" => "1.0.0" }) do
           package_json = described_class.new(:yarn_classic)
 
-          expect(package_json.manager).to be_a PackageJson::Managers::YarnLike
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
         end
       end
 

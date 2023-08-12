@@ -3,7 +3,7 @@
 require_relative "package_json/managers/base"
 require_relative "package_json/managers/npm_like"
 require_relative "package_json/managers/pnpm_like"
-require_relative "package_json/managers/yarn_like"
+require_relative "package_json/managers/yarn_classic_like"
 require_relative "package_json/version"
 require "json"
 
@@ -44,7 +44,7 @@ class PackageJson
     when :npm
       PackageJson::Managers::NpmLike.new(self)
     when :yarn_classic
-      PackageJson::Managers::YarnLike.new(self)
+      PackageJson::Managers::YarnClassicLike.new(self)
     when :pnpm
       PackageJson::Managers::PnpmLike.new(self)
     else
