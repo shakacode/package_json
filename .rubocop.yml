@@ -14,7 +14,7 @@ AllCops:
   NewCops: enable
   DisplayCopNames: true
   DisplayStyleGuide: true
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 2.6
   Exclude:
     - 'bin/*'
     - 'node_modules/**/*'
