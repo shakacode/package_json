@@ -379,4 +379,38 @@ RSpec.describe PackageJson do
       end
     end
   end
+
+  describe "#delete!" do
+    it "deletes the key from the package.json" do
+      with_package_json_file({ "version" => "1.0.0", "babel" => { "presets" => ["path/to/my/preset"] } }) do
+        package_json = described_class.new
+
+        package_json.delete!("babel")
+
+        expect_package_json_with_content({ "version" => "1.0.0" })
+      end
+    end
+
+    it "returns the value" do
+      with_package_json_file({ "version" => "1.0.0", "babel" => { "presets" => ["path/to/my/preset"] } }) do
+        package_json = described_class.new
+
+        expect(package_json.delete!("babel")).to eq({ "presets" => ["path/to/my/preset"] })
+      end
+    end
+
+    context "when the property does not exist" do
+      it "does not error" do
+        package_json = described_class.new
+
+        expect { package_json.delete!("does not exist") }.not_to raise_error
+      end
+
+      it "returns nil" do
+        package_json = described_class.new
+
+        expect(package_json.delete!("does not exist")).to be_nil
+      end
+    end
+  end
 end

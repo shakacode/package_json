@@ -52,6 +52,9 @@ package_json.merge! do |pj|
   }
 end
 
+# deletes the "babel" property, if it exists
+package_json.delete!("babel")
+
 # runs the "lint" script with the "--fix" argument
 package_json.manager.run("lint", ["--fix"])
 ```

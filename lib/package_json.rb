@@ -77,6 +77,16 @@ class PackageJson
     write_package_json(pj.merge(yield read_package_json))
   end
 
+  def delete!(key)
+    pj = read_package_json
+
+    value = pj.delete(key)
+
+    write_package_json(pj)
+
+    value
+  end
+
   private
 
   def package_json_path
