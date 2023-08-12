@@ -31,10 +31,18 @@ class PackageJson
           ?silent: bool
         ) -> void
 
+      def native_run_command: (
+          String script_name,
+          ?Array[String] args,
+          ?silent: bool
+        ) -> String
+
       private
 
       @manager_cmd: String
       @package_json: PackageJson
+
+      def build_full_cmd: (String cmd, Array[String] args) -> String
 
       def raw: (String cmd, Array[String] args) -> void
     end

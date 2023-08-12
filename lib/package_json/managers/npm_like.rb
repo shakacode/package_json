@@ -64,15 +64,27 @@ class PackageJson
         args = [],
         silent: false
       )
+        raw("run", build_run_args(script_name, args, silent: silent))
+      end
+
+      # Provides the "native" command for running the script with args for embedding into shell scripts
+      def native_run_command(
+        script_name,
+        args = [],
+        silent: false
+      )
+        build_full_cmd("run", build_run_args(script_name, args, silent: silent))
+      end
+
+      private
+
+      def build_run_args(script_name, args, silent:)
         # npm assumes flags prefixed with - are for it, unless they come after a "--"
         args = [script_name, "--", *args]
 
         args.unshift("--silent") if silent
-
-        raw("run", args)
+        args
       end
-
-      private
 
       def with_native_args(
         *extra_args,

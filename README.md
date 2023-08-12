@@ -180,6 +180,25 @@ package_json.manager.run("lint", ["--fix"], silent: true)
 | -------- | ---------------------------------------- |
 | `silent` | Suppress output from the package manager |
 
+### Generating a run command for embedding in native scripts
+
+```ruby
+native_run_command = package_json.manager.native_run_command("test", ["--coverage"])
+
+append_to_file "bin/ci-run" do
+  <<~CMD
+    echo "* ******************************************************"
+    echo "* Running JS tests"
+    echo "* ******************************************************"
+    #{native_run_command}
+  CMD
+end
+```
+
+| Option   | Description                              |
+| -------- | ---------------------------------------- |
+| `silent` | Suppress output from the package manager |
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run

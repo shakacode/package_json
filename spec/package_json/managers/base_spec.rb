@@ -28,4 +28,10 @@ RSpec.describe PackageJson::Managers::Base do
       expect { base.run("") }.to raise_error PackageJson::NotImplementedError
     end
   end
+
+  describe "#native_run_command" do
+    it "does not have an implementation" do
+      expect { base.native_run_command("") }.to raise_error PackageJson::NotImplementedError
+    end
+  end
 end

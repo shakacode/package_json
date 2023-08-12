@@ -48,10 +48,23 @@ class PackageJson
         raise NotImplementedError
       end
 
+      # Provides the "native" command for running the script with args for embedding into shell scripts
+      def native_run_command(
+        script_name,
+        args = [],
+        silent: false
+      )
+        raise NotImplementedError
+      end
+
       private
 
+      def build_full_cmd(cmd, args)
+        [@manager_cmd, cmd, *args].join(" ")
+      end
+
       def raw(cmd, args)
-        result = Kernel.system [@manager_cmd, cmd, *args].join(" ")
+        result = Kernel.system build_full_cmd(cmd, args)
 
         raise Error, "#{@manager_cmd} exited with non-zero code" unless result
       end

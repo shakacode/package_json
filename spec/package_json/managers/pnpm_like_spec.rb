@@ -289,4 +289,22 @@ RSpec.describe PackageJson::Managers::PnpmLike do
       end
     end
   end
+
+  describe "#native_run_command" do
+    it "returns the full command" do
+      expect(manager.native_run_command("my-script")).to eq("#{package_manager_cmd} run my-script")
+    end
+
+    it "includes args" do
+      expect(manager.native_run_command("my-script", ["--flag", "value"])).to eq(
+        "#{package_manager_cmd} run my-script --flag value"
+      )
+    end
+
+    it "includes the silent option" do
+      expect(manager.native_run_command("my-script", ["--flag", "value"], silent: true)).to eq(
+        "#{package_manager_cmd} run --silent my-script --flag value"
+      )
+    end
+  end
 end

@@ -31,7 +31,19 @@ class PackageJson
           ?silent: bool
         ) -> void
 
+      def native_run_command: (
+          String script_name,
+          ?Array[String] args,
+          ?silent: bool
+        ) -> String
+
       private
+
+      def build_run_args: (
+          String script_name,
+          Array[String] args,
+          silent: bool
+        ) -> Array[String]
 
       def with_native_args: (
           *(String | nil) extra_args,

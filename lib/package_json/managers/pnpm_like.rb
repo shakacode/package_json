@@ -61,14 +61,26 @@ class PackageJson
         args = [],
         silent: false
       )
-        args = [script_name, *args]
+        raw("run", build_run_args(script_name, args, silent: silent))
+      end
 
-        args.unshift("--silent") if silent
-
-        raw("run", args)
+      # Provides the "native" command for running the script with args for embedding into shell scripts
+      def native_run_command(
+        script_name,
+        args = [],
+        silent: false
+      )
+        build_full_cmd("run", build_run_args(script_name, args, silent: silent))
       end
 
       private
+
+      def build_run_args(script_name, args, silent:)
+        args = [script_name, *args]
+
+        args.unshift("--silent") if silent
+        args
+      end
 
       def with_native_args(
         *extra_args,
