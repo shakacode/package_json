@@ -133,6 +133,28 @@ package_json.manager.install(frozen: true)
 | `legacy_peer_deps`   | Have `npm` completely ignore `peerDependencies` when installing; does nothing for other package managers |
 | `omit_optional_deps` | Omit optional dependencies when installing                                                               |
 
+### Generating the `install` command for embedding in native scripts
+
+```ruby
+native_install_command = package_json.manager.native_install_command
+
+append_to_file "bin/ci-run" do
+  <<~CMD
+    echo "* ******************************************************"
+    echo "* Installing JS dependencies"
+    echo "* ******************************************************"
+    #{native_install_command}
+  CMD
+end
+```
+
+| Option               | Description                                                                                              |
+| -------------------- | -------------------------------------------------------------------------------------------------------- |
+| `frozen`             | Fail if the lockfile needs to be updated                                                                 |
+| `ignore_scripts`     | Don't run scripts specified in `package.json` files                                                      |
+| `legacy_peer_deps`   | Have `npm` completely ignore `peerDependencies` when installing; does nothing for other package managers |
+| `omit_optional_deps` | Omit optional dependencies when installing                                                               |
+
 ### Adding dependencies
 
 ```ruby

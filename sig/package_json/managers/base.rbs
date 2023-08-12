@@ -10,6 +10,13 @@ class PackageJson
           ?omit_optional_deps: bool
         ) -> void
 
+      def native_install_command: (
+          ?frozen: bool,
+          ?ignore_scripts: bool,
+          ?legacy_peer_deps: bool,
+          ?omit_optional_deps: bool
+        ) -> String
+
       def add: (
           Array[String] packages,
           ?type: :production | :dev | :optional | :peer,

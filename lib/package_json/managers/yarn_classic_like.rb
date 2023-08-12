@@ -1,6 +1,6 @@
 class PackageJson
   module Managers
-    class YarnClassicLike < Base
+    class YarnClassicLike < Base # rubocop:disable Metrics/ClassLength
       def initialize(package_json, manager_cmd: "yarn")
         super(package_json, manager_cmd: manager_cmd)
       end
@@ -20,6 +20,23 @@ class PackageJson
         )
 
         raw("install", args)
+      end
+
+      # Provides the "native" command for installing dependencies with this package manager for embedding into scripts
+      def native_install_command(
+        frozen: false,
+        ignore_scripts: false,
+        legacy_peer_deps: false,
+        omit_optional_deps: false
+      )
+        args = with_native_args(
+          frozen: frozen,
+          ignore_scripts: ignore_scripts,
+          omit_optional_deps: omit_optional_deps,
+          _unsupported: [legacy_peer_deps]
+        )
+
+        build_full_cmd("install", args)
       end
 
       # Adds the given packages

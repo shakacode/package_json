@@ -80,6 +80,49 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
     end
   end
 
+  describe "#native_install_command" do
+    it "returns the full command" do
+      expect(manager.native_install_command).to eq("#{package_manager_cmd} install")
+    end
+
+    context "when passing the usual options" do
+      it "supports frozen" do
+        expect(manager.native_install_command(frozen: true)).to eq(
+          "#{package_manager_cmd} install --frozen-lockfile"
+        )
+      end
+
+      it "supports ignore_scripts" do
+        expect(manager.native_install_command(ignore_scripts: true)).to eq(
+          "#{package_manager_cmd} install --ignore-scripts"
+        )
+      end
+
+      it "supports legacy_peer_deps" do
+        expect(manager.native_install_command(legacy_peer_deps: true)).to eq(
+          "#{package_manager_cmd} install"
+        )
+      end
+
+      it "supports omit_optional_deps" do
+        expect(manager.native_install_command(omit_optional_deps: true)).to eq(
+          "#{package_manager_cmd} install --ignore-optional"
+        )
+      end
+
+      it "supports all the options together" do
+        expect(
+          manager.native_install_command(
+            frozen: true,
+            ignore_scripts: true,
+            legacy_peer_deps: true,
+            omit_optional_deps: true
+          )
+        ).to eq("#{package_manager_cmd} install --frozen-lockfile --ignore-scripts --ignore-optional")
+      end
+    end
+  end
+
   describe "#add" do
     it "adds dependencies as production by default" do
       with_package_json_file do

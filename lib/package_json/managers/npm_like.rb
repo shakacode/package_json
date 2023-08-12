@@ -1,6 +1,6 @@
 class PackageJson
   module Managers
-    class NpmLike < Base
+    class NpmLike < Base # rubocop:disable Metrics/ClassLength
       def initialize(package_json, manager_cmd: "npm")
         super(package_json, manager_cmd: manager_cmd)
       end
@@ -22,6 +22,25 @@ class PackageJson
         )
 
         raw(cmd, args)
+      end
+
+      # Provides the "native" command for installing dependencies with this package manager for embedding into scripts
+      def native_install_command(
+        frozen: false,
+        ignore_scripts: false,
+        legacy_peer_deps: false,
+        omit_optional_deps: false
+      )
+        cmd = "install"
+        cmd = "ci" if frozen
+
+        args = with_native_args(
+          ignore_scripts: ignore_scripts,
+          legacy_peer_deps: legacy_peer_deps,
+          omit_optional_deps: omit_optional_deps
+        )
+
+        build_full_cmd(cmd, args)
       end
 
       # Adds the given packages

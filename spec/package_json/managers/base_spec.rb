@@ -11,6 +11,12 @@ RSpec.describe PackageJson::Managers::Base do
     end
   end
 
+  describe "#native_install_command" do
+    it "does not have an implementation" do
+      expect { base.native_install_command }.to raise_error PackageJson::NotImplementedError
+    end
+  end
+
   describe "#add" do
     it "does not have an implementation" do
       expect { base.add([]) }.to raise_error PackageJson::NotImplementedError

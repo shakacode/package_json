@@ -18,6 +18,16 @@ class PackageJson
         raise NotImplementedError
       end
 
+      # Provides the "native" command for installing dependencies with this package manager for embedding into scripts
+      def native_install_command(
+        frozen: false,
+        ignore_scripts: false,
+        legacy_peer_deps: false,
+        omit_optional_deps: false
+      )
+        raise NotImplementedError
+      end
+
       # Adds the given packages
       def add(
         packages,
