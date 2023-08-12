@@ -6,12 +6,22 @@ on:
       - main
   pull_request:
 
+# Restrict jobs in this workflow to only be allowed to read this repo by default.
+#
+# If you are wanting to introduce a job/tool that requires more permissions (such
+# as posting comments or commits to the repository), then you should grant just
+# that job the necessarily permissions by giving it a dedicated `permissions` block.
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
   prettier:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-node@v3
 
@@ -26,6 +36,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -38,6 +50,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
