@@ -64,16 +64,9 @@ because it is expected that the `package.json` might be changed by external
 sources such as package managers, `PackageJson` reads and writes to and from the
 `package.json` as needed rather than representing it in memory.
 
-You can initialize a `PackageJson` with either `new` or `read` depending on if
-you want to ensure the `package.json` exists or throw if it doesn't:
-
-```ruby
-# this will create the `package.json` if it does not exist
-PackageJson.new(:npm, "path/to/directory")
-
-# this will error if the `package.json` does not exist
-PackageJson.read("path/to/directory", :npm)
-```
+If you expect the `package.json` to already exist, you can use `read` instead
+which will raise an error instead of implicitly creating the file if it doesn't
+exist.
 
 A `PackageJson` also comes with a `manager` that can be used to manage
 dependencies and run scripts. The manager will be inferred by the
@@ -94,7 +87,7 @@ You can specify a fallback package manager to use in-case the `package.json`
 does not exist or does not have the `packageManager` property:
 
 ```ruby
-PackageJson.new(:yarn_classic)
+PackageJson.new(fallback_manager: :yarn_classic)
 ```
 
 The default fallback is `:npm`; supported package managers are `:npm`,
