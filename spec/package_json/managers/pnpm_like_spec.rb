@@ -22,7 +22,7 @@ RSpec.describe PackageJson::Managers::PnpmLike do
       with_package_json_file do
         manager.install
 
-        expect_manager_to_be_invoked_with("install")
+        expect_manager_to_be_invoked_with("install --no-frozen-lockfile")
       end
     end
 
@@ -42,7 +42,7 @@ RSpec.describe PackageJson::Managers::PnpmLike do
         with_package_json_file do
           manager.install(ignore_scripts: true)
 
-          expect_manager_to_be_invoked_with("install --ignore-scripts")
+          expect_manager_to_be_invoked_with("install --no-frozen-lockfile --ignore-scripts")
         end
       end
 
@@ -50,7 +50,7 @@ RSpec.describe PackageJson::Managers::PnpmLike do
         with_package_json_file do
           manager.install(legacy_peer_deps: true)
 
-          expect_manager_to_be_invoked_with("install")
+          expect_manager_to_be_invoked_with("install --no-frozen-lockfile")
         end
       end
 
@@ -58,7 +58,7 @@ RSpec.describe PackageJson::Managers::PnpmLike do
         with_package_json_file do
           manager.install(omit_optional_deps: true)
 
-          expect_manager_to_be_invoked_with("install --no-optional")
+          expect_manager_to_be_invoked_with("install --no-frozen-lockfile --no-optional")
         end
       end
 
@@ -82,7 +82,7 @@ RSpec.describe PackageJson::Managers::PnpmLike do
 
   describe "#native_install_command" do
     it "returns the full command" do
-      expect(manager.native_install_command).to eq("#{package_manager_cmd} install")
+      expect(manager.native_install_command).to eq("#{package_manager_cmd} install --no-frozen-lockfile")
     end
 
     context "when passing the usual options" do
@@ -94,19 +94,19 @@ RSpec.describe PackageJson::Managers::PnpmLike do
 
       it "supports ignore_scripts" do
         expect(manager.native_install_command(ignore_scripts: true)).to eq(
-          "#{package_manager_cmd} install --ignore-scripts"
+          "#{package_manager_cmd} install --no-frozen-lockfile --ignore-scripts"
         )
       end
 
       it "supports legacy_peer_deps" do
         expect(manager.native_install_command(legacy_peer_deps: true)).to eq(
-          "#{package_manager_cmd} install"
+          "#{package_manager_cmd} install --no-frozen-lockfile"
         )
       end
 
       it "supports omit_optional_deps" do
         expect(manager.native_install_command(omit_optional_deps: true)).to eq(
-          "#{package_manager_cmd} install --no-optional"
+          "#{package_manager_cmd} install --no-frozen-lockfile --no-optional"
         )
       end
 

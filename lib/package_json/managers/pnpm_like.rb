@@ -108,7 +108,15 @@ class PackageJson
       )
         args = [*extra_args]
 
-        args << "--frozen-lockfile" if frozen
+        # we make frozen lockfile behaviour consistent with the other package managers
+        # as pnpm automatically enables frozen lockfile if it detects it's running in CI
+        unless frozen.nil?
+          flag = "--no-frozen-lockfile"
+          flag = "--frozen-lockfile" if frozen
+
+          args << flag
+        end
+
         args << "--ignore-scripts" if ignore_scripts
         args << "--no-optional" if omit_optional_deps
 
