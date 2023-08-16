@@ -1,6 +1,6 @@
 class PackageJson
   module Managers
-    class Base
+    class Base # rubocop:disable Metrics/ClassLength
       def initialize(package_json, manager_cmd:)
         # @type [PackageJson]
         @package_json = package_json
@@ -28,6 +28,21 @@ class PackageJson
         raise NotImplementedError
       end
 
+      # Installs the dependencies specified in the `package.json` file
+      def install!(
+        frozen: false,
+        ignore_scripts: false,
+        legacy_peer_deps: false,
+        omit_optional_deps: false
+      )
+        raise_exited_with_non_zero_code_error unless install(
+          frozen: frozen,
+          ignore_scripts: ignore_scripts,
+          legacy_peer_deps: legacy_peer_deps,
+          omit_optional_deps: omit_optional_deps
+        )
+      end
+
       # Adds the given packages
       def add(
         packages,
@@ -37,6 +52,23 @@ class PackageJson
         omit_optional_deps: false
       )
         raise NotImplementedError
+      end
+
+      # Adds the given packages
+      def add!(
+        packages,
+        type: :production,
+        ignore_scripts: false,
+        legacy_peer_deps: false,
+        omit_optional_deps: false
+      )
+        raise_exited_with_non_zero_code_error unless add(
+          packages,
+          type: type,
+          ignore_scripts: ignore_scripts,
+          legacy_peer_deps: legacy_peer_deps,
+          omit_optional_deps: omit_optional_deps
+        )
       end
 
       # Removes the given packages
@@ -49,6 +81,21 @@ class PackageJson
         raise NotImplementedError
       end
 
+      # Removes the given packages
+      def remove!(
+        packages,
+        ignore_scripts: false,
+        legacy_peer_deps: false,
+        omit_optional_deps: false
+      )
+        raise_exited_with_non_zero_code_error unless remove(
+          packages,
+          ignore_scripts: ignore_scripts,
+          legacy_peer_deps: legacy_peer_deps,
+          omit_optional_deps: omit_optional_deps
+        )
+      end
+
       # Runs the script assuming it is defined in the `package.json` file
       def run(
         script_name,
@@ -56,6 +103,19 @@ class PackageJson
         silent: false
       )
         raise NotImplementedError
+      end
+
+      # Runs the script assuming it is defined in the `package.json` file
+      def run!(
+        script_name,
+        args = [],
+        silent: false
+      )
+        raise_exited_with_non_zero_code_error unless run(
+          script_name,
+          args,
+          silent: silent
+        )
       end
 
       # Provides the "native" command for running the script with args for embedding into shell scripts
@@ -69,14 +129,16 @@ class PackageJson
 
       private
 
+      def raise_exited_with_non_zero_code_error
+        raise Error, "#{@manager_cmd} exited with non-zero code"
+      end
+
       def build_full_cmd(cmd, args)
         [@manager_cmd, cmd, *args].join(" ")
       end
 
       def raw(cmd, args)
-        result = Kernel.system build_full_cmd(cmd, args)
-
-        raise Error, "#{@manager_cmd} exited with non-zero code" unless result
+        Kernel.system build_full_cmd(cmd, args)
       end
     end
   end

@@ -8,6 +8,13 @@ class PackageJson
           ?ignore_scripts: bool,
           ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool
+        ) -> (bool | nil)
+
+      def install!: (
+          ?frozen: bool,
+          ?ignore_scripts: bool,
+          ?legacy_peer_deps: bool,
+          ?omit_optional_deps: bool
         ) -> void
 
       def native_install_command: (
@@ -23,6 +30,14 @@ class PackageJson
           ?ignore_scripts: bool,
           ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool
+        ) -> (bool | nil)
+
+      def add!: (
+          Array[String] packages,
+          ?type: :production | :dev | :optional | :peer,
+          ?ignore_scripts: bool,
+          ?legacy_peer_deps: bool,
+          ?omit_optional_deps: bool
         ) -> void
 
       def remove: (
@@ -30,9 +45,22 @@ class PackageJson
           ?ignore_scripts: bool,
           ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool
+        ) -> (bool | nil)
+
+      def remove!: (
+          Array[String] packages,
+          ?ignore_scripts: bool,
+          ?legacy_peer_deps: bool,
+          ?omit_optional_deps: bool
         ) -> void
 
       def run: (
+          String script_name,
+          ?Array[String] args,
+          ?silent: bool
+        ) -> (bool | nil)
+
+      def run!: (
           String script_name,
           ?Array[String] args,
           ?silent: bool
