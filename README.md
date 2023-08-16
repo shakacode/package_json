@@ -103,14 +103,19 @@ exists without the property.
 > TODO: providing a class
 
 Managers are provided a reference to the `PackageJson` when they're initialized,
-are run in the same directory as that `PackageJson`, and lets you do the
-following:
+are run in the same directory as that `PackageJson`, and lets you do a series of
+common actions defined below.
 
-> **Note**
->
-> Unless otherwise noted, options are safe to use regardless of what underlying
-> package manager is being used; if an option is not supported by a particular
-> package manager, it will be ignored
+Unless otherwise noted for a particular method, each method:
+
+- Behaves like `system`, returning either `true`, `false`, or `nil` based on if
+  the package manager exited with a non-zero error code; each method has a
+  bang-equivalent if you wish an exception to be thrown instead
+- Does not attempt to capture or intercept the output; using `Kernel.system`
+  under the hood, output is sent directly to `stdout` and `stderr`
+- Can be passed any of the options listed for the particular method regardless
+  of what underlying package manager is being used; if an option is not
+  supported by the manager, it will be ignored
 
 ### Installing dependencies
 
