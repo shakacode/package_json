@@ -10,12 +10,7 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
 
   around { |example| within_temp_directory { example.run } }
 
-  before do
-    allow(Kernel).to receive(:system).and_wrap_original do |original_method, *args|
-      # make things quieter by redirecting output to /dev/null
-      original_method.call(*args, 1 => File::NULL, 2 => File::NULL)
-    end
-  end
+  before { allow_kernel_to_receive_system }
 
   describe "#install" do
     it "runs and returns true" do
