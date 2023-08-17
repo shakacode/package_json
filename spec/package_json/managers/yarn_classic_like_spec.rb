@@ -5,7 +5,7 @@ require "spec_helper"
 RSpec.describe PackageJson::Managers::YarnClassicLike do
   subject(:manager) { described_class.new(package_json, manager_cmd: package_manager_cmd) }
 
-  let(:package_manager_cmd) { "npx yarn@1" }
+  let(:package_manager_cmd) { "npx -y yarn@1" }
   let(:package_json) { PackageJson.new }
 
   around { |example| within_temp_directory { example.run } }

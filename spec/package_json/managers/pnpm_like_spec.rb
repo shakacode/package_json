@@ -5,7 +5,7 @@ require "spec_helper"
 RSpec.describe PackageJson::Managers::PnpmLike do
   subject(:manager) { described_class.new(package_json, manager_cmd: package_manager_cmd) }
 
-  let(:package_manager_cmd) { "npx pnpm@8" }
+  let(:package_manager_cmd) { "npx -y pnpm@8" }
   let(:package_json) { PackageJson.new }
 
   around { |example| within_temp_directory { example.run } }
