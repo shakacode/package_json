@@ -120,6 +120,16 @@ Unless otherwise noted for a particular method, each method:
   native commands, it is up to the caller to ensure the working directory is
   correct
 
+### Get the version of the package manager
+
+```ruby
+package_json.manager.version
+```
+
+This is suitable for checking that the package manager is actually available
+before performing other operations. Unlike other non-bang methods, this will
+error if the underlying command exits with a non-zero code.
+
 ### Installing dependencies
 
 ```ruby

@@ -12,6 +12,12 @@ RSpec.describe PackageJson::Managers::NpmLike do
 
   before { allow_kernel_to_receive_system }
 
+  describe "#version" do
+    it "returns the version" do
+      expect(manager.version).to start_with("9.")
+    end
+  end
+
   describe "#install" do
     it "runs and returns true" do
       with_package_json_file do

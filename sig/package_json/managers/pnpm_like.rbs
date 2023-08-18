@@ -3,6 +3,8 @@ class PackageJson
     class PnpmLike < Base
       def initialize: (PackageJson package_json, ?manager_cmd: String) -> self
 
+      def version: () -> String
+
       def install: (
           ?frozen: bool,
           ?ignore_scripts: bool,

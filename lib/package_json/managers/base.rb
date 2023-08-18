@@ -8,6 +8,19 @@ class PackageJson
         @manager_cmd = manager_cmd
       end
 
+      def version
+        require "open3"
+
+        command = "#{@manager_cmd} --version"
+        stdout, stderr, status = Open3.capture3(command)
+
+        unless status.success?
+          raise PackageJson::Error, "#{command} failed with exit code #{status.exitstatus}: #{stderr}"
+        end
+
+        stdout.chomp
+      end
+
       # Installs the dependencies specified in the `package.json` file
       def install(
         frozen: false,
