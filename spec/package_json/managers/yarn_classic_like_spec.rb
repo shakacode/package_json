@@ -582,4 +582,31 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
       ])
     end
   end
+
+  describe "#native_exec_command" do
+    let(:bin_path) { File.join(Dir.pwd, "node_modules", ".bin") }
+
+    it "returns the full command" do
+      expect(manager.native_exec_command("webpack")).to eq(["#{bin_path}/webpack"])
+    end
+
+    it "includes args" do
+      expect(manager.native_exec_command("webpack", ["--flag", "value"])).to eq([
+        "#{bin_path}/webpack", "--flag", "value"
+      ])
+    end
+
+    context "when yarn bin errors" do
+      before do
+        allow(Open3).to receive(:capture3).and_return(["", "oh noes!", Struct::Status.new(1)])
+      end
+
+      it "raises an error" do
+        expect { manager.native_exec_command("webpack") }.to raise_error(
+          PackageJson::Error,
+          "#{package_manager_cmd} bin failed with exit code 1: oh noes!"
+        )
+      end
+    end
+  end
 end

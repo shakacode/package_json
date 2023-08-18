@@ -245,6 +245,33 @@ end
 | -------- | ---------------------------------------- |
 | `silent` | Suppress output from the package manager |
 
+### Generating a `exec` command for native scripts and advanced calls
+
+```ruby
+native_exec_command = package_json.manager.native_exec_command("webpack", ["serve"])
+
+# runs the command with extra environment variables
+Kernel.system({ "HELLO" => "WORLD" }, *native_exec_command)
+
+append_to_file "bin/webpack-webpack" do
+  <<~CMD
+    echo "* ******************************************************"
+    echo "* Serving assets via webpack
+    echo "* ******************************************************"
+    #{native_exec_command.join(" ")}
+  CMD
+end
+```
+
+> **Note**
+>
+> Since Yarn Classic doesn't provide a native `exec` command, `yarn bin` is used
+> instead to identify where the package command should be within `node_modules`.
+>
+> For other package managers, their native `exec` command is used with the flags
+> necessary to enforce the package command is only executed if the package is
+> installed locally.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run

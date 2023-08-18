@@ -572,4 +572,18 @@ RSpec.describe PackageJson::Managers::PnpmLike do
       ])
     end
   end
+
+  describe "#native_exec_command" do
+    it "returns the full command" do
+      expect(manager.native_exec_command("webpack")).to eq([
+        package_manager_cmd, "exec", "webpack"
+      ])
+    end
+
+    it "includes args" do
+      expect(manager.native_exec_command("webpack", ["--flag", "value"])).to eq([
+        package_manager_cmd, "exec", "webpack", "--flag", "value"
+      ])
+    end
+  end
 end

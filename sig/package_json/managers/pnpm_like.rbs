@@ -74,6 +74,11 @@ class PackageJson
           ?silent: bool
         ) -> Array[String]
 
+      def native_exec_command: (
+          String script_name,
+          ?Array[String] args
+        ) -> Array[String]
+
       private
 
       def build_run_args: (

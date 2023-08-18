@@ -91,7 +91,27 @@ class PackageJson
         build_full_cmd("run", build_run_args(script_name, args, silent: silent))
       end
 
+      def native_exec_command(
+        script_name,
+        args = []
+      )
+        [File.join(fetch_bin_path, script_name), *args]
+      end
+
       private
+
+      def fetch_bin_path
+        require "open3"
+
+        command = build_full_cmd("bin", []).join(" ")
+        stdout, stderr, status = Open3.capture3(command)
+
+        unless status.success?
+          raise PackageJson::Error, "#{command} failed with exit code #{status.exitstatus}: #{stderr}"
+        end
+
+        stdout.chomp
+      end
 
       def build_run_args(script_name, args, silent:)
         args = [script_name, *args]
