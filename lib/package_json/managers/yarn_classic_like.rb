@@ -2,7 +2,7 @@ class PackageJson
   module Managers
     class YarnClassicLike < Base # rubocop:disable Metrics/ClassLength
       def initialize(package_json, manager_cmd: "yarn")
-        super(package_json, manager_cmd: manager_cmd)
+        super(package_json, manager_cmd: manager_cmd, name_pretty: "Yarn (classic)")
       end
 
       # Installs the dependencies specified in the `package.json` file

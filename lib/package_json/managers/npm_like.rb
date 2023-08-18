@@ -2,7 +2,7 @@ class PackageJson
   module Managers
     class NpmLike < Base # rubocop:disable Metrics/ClassLength
       def initialize(package_json, manager_cmd: "npm")
-        super(package_json, manager_cmd: manager_cmd)
+        super(package_json, manager_cmd: manager_cmd, name_pretty: "NPM")
       end
 
       # Installs the dependencies specified in the `package.json` file

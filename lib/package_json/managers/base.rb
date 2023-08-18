@@ -1,11 +1,15 @@
 class PackageJson
   module Managers
     class Base # rubocop:disable Metrics/ClassLength
-      def initialize(package_json, manager_cmd:)
+      attr_reader :name_pretty
+
+      def initialize(package_json, manager_cmd:, name_pretty:)
         # @type [PackageJson]
         @package_json = package_json
         # @type [String]
         @manager_cmd = manager_cmd
+        # @type [String]
+        @name_pretty = name_pretty
       end
 
       def version

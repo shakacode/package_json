@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe PackageJson::Managers::Base do
-  subject(:base) { described_class.new(instance_double(PackageJson), manager_cmd: "base") }
+  subject(:base) { described_class.new(instance_double(PackageJson), manager_cmd: "base", name_pretty: "base") }
 
   describe "#version" do
     before do
