@@ -13,6 +13,7 @@ require "package_json"
 require "./spec/support/package_json_builder"
 require "./spec/support/yarn_berry_helpers"
 require "./spec/support/expect_helpers"
+require "./spec/support/status_struct"
 require "./spec/support/temp_helpers"
 
 RSpec.configure do |config|

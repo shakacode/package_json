@@ -12,18 +12,6 @@ RSpec.describe PackageJson::Managers::Base do
   end
 
   describe "#version" do
-    require "open3"
-
-    Struct.new("Status", :exit_code) do
-      def success?
-        exit_code.zero?
-      end
-
-      def exitstatus
-        exit_code
-      end
-    end
-
     before do
       allow(Open3).to receive(:capture3).and_return(["1.2.3\n", "", Struct::Status.new(0)])
     end
@@ -109,6 +97,12 @@ RSpec.describe PackageJson::Managers::Base do
   describe "#native_run_command" do
     it "does not have an implementation" do
       expect { base.native_run_command("") }.to raise_error PackageJson::NotImplementedError
+    end
+  end
+
+  describe "#native_exec_command" do
+    it "does not have an implementation" do
+      expect { base.native_exec_command("") }.to raise_error PackageJson::NotImplementedError
     end
   end
 end

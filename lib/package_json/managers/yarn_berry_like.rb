@@ -83,6 +83,13 @@ class PackageJson
         build_full_cmd("run", build_run_args(script_name, args, _silent: silent))
       end
 
+      def native_exec_command(
+        script_name,
+        args = []
+      )
+        build_full_cmd("exec", build_run_args(script_name, args, _silent: false))
+      end
+
       private
 
       def build_run_args(script_name, args, _silent:)

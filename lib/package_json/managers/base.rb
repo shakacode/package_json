@@ -143,6 +143,14 @@ class PackageJson
         raise NotImplementedError
       end
 
+      # Provides the "native" command for executing a package with args for embedding into shell scripts
+      def native_exec_command(
+        script_name,
+        args = []
+      )
+        raise NotImplementedError
+      end
+
       private
 
       def raise_exited_with_non_zero_code_error
