@@ -1,7 +1,15 @@
 class PackageJson
   module Managers
     class NpmLike < Base # rubocop:disable Metrics/ClassLength
-      def initialize(package_json, manager_cmd: "npm")
+      def self.symbol
+        :npm
+      end
+
+      def self.cmd
+        symbol.to_s
+      end
+
+      def initialize(package_json, manager_cmd: NpmLike.cmd)
         super(package_json, manager_cmd: manager_cmd, name_pretty: "NPM")
       end
 

@@ -1,7 +1,15 @@
 class PackageJson
   module Managers
     class YarnClassicLike < Base # rubocop:disable Metrics/ClassLength
-      def initialize(package_json, manager_cmd: "yarn")
+      def self.symbol
+        :yarn_classic
+      end
+
+      def self.cmd
+        "yarn"
+      end
+
+      def initialize(package_json, manager_cmd: YarnClassicLike.cmd)
         super(package_json, manager_cmd: manager_cmd, name_pretty: "Yarn (classic)")
       end
 

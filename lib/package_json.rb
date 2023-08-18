@@ -29,9 +29,12 @@ class PackageJson
   def initialize(path_to_directory = Dir.pwd, fallback_manager: PackageJson.fetch_default_fallback_manager)
     @path = File.absolute_path(path_to_directory)
 
-    ensure_package_json_exists(fallback_manager)
+    existed = ensure_package_json_exists
 
     @manager = new_package_manager(determine_package_manager(fallback_manager))
+
+    # only record the packageManager automatically if we created the package.json
+    record_package_manager! unless existed
   end
 
   def determine_package_manager(fallback_manager)
@@ -53,11 +56,11 @@ class PackageJson
 
   def new_package_manager(package_manager_name)
     case package_manager_name
-    when :npm
+    when PackageJson::Managers::NpmLike.symbol
       PackageJson::Managers::NpmLike.new(self)
-    when :yarn_classic
+    when PackageJson::Managers::YarnClassicLike.symbol
       PackageJson::Managers::YarnClassicLike.new(self)
-    when :pnpm
+    when PackageJson::Managers::PnpmLike.symbol
       PackageJson::Managers::PnpmLike.new(self)
     else
       raise Error, "unsupported package manager \"#{package_manager_name}\""
@@ -91,19 +94,22 @@ class PackageJson
     value
   end
 
+  def record_package_manager!
+    merge! { { "packageManager" => "#{manager.class.cmd}@#{manager.version}" } }
+  end
+
   private
 
   def package_json_path
     "#{path}/package.json"
   end
 
-  def ensure_package_json_exists(package_manager)
-    return if File.exist?(package_json_path)
+  def ensure_package_json_exists
+    return true if File.exist?(package_json_path)
 
-    pm = package_manager.to_s
-    pm = "yarn@1" if package_manager == :yarn_classic
+    write_package_json({})
 
-    write_package_json({ "packageManager" => pm })
+    false
   end
 
   def read_package_json
