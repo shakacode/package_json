@@ -129,31 +129,31 @@ RSpec.describe PackageJson::Managers::PnpmLike do
 
   describe "#native_install_command" do
     it "returns the full command" do
-      expect(manager.native_install_command).to eq("#{package_manager_cmd} install --no-frozen-lockfile")
+      expect(manager.native_install_command).to eq([package_manager_cmd, "install", "--no-frozen-lockfile"])
     end
 
     context "when passing the usual options" do
       it "supports frozen" do
         expect(manager.native_install_command(frozen: true)).to eq(
-          "#{package_manager_cmd} install --frozen-lockfile"
+          [package_manager_cmd, "install", "--frozen-lockfile"]
         )
       end
 
       it "supports ignore_scripts" do
         expect(manager.native_install_command(ignore_scripts: true)).to eq(
-          "#{package_manager_cmd} install --no-frozen-lockfile --ignore-scripts"
+          [package_manager_cmd, "install", "--no-frozen-lockfile", "--ignore-scripts"]
         )
       end
 
       it "supports legacy_peer_deps" do
         expect(manager.native_install_command(legacy_peer_deps: true)).to eq(
-          "#{package_manager_cmd} install --no-frozen-lockfile"
+          [package_manager_cmd, "install", "--no-frozen-lockfile"]
         )
       end
 
       it "supports omit_optional_deps" do
         expect(manager.native_install_command(omit_optional_deps: true)).to eq(
-          "#{package_manager_cmd} install --no-frozen-lockfile --no-optional"
+          [package_manager_cmd, "install", "--no-frozen-lockfile", "--no-optional"]
         )
       end
 
@@ -165,7 +165,7 @@ RSpec.describe PackageJson::Managers::PnpmLike do
             legacy_peer_deps: true,
             omit_optional_deps: true
           )
-        ).to eq("#{package_manager_cmd} install --frozen-lockfile --ignore-scripts --no-optional")
+        ).to eq([package_manager_cmd, "install", "--frozen-lockfile", "--ignore-scripts", "--no-optional"])
       end
     end
   end
@@ -557,19 +557,19 @@ RSpec.describe PackageJson::Managers::PnpmLike do
 
   describe "#native_run_command" do
     it "returns the full command" do
-      expect(manager.native_run_command("my-script")).to eq("#{package_manager_cmd} run my-script")
+      expect(manager.native_run_command("my-script")).to eq([package_manager_cmd, "run", "my-script"])
     end
 
     it "includes args" do
-      expect(manager.native_run_command("my-script", ["--flag", "value"])).to eq(
-        "#{package_manager_cmd} run my-script --flag value"
-      )
+      expect(manager.native_run_command("my-script", ["--flag", "value"])).to eq([
+        package_manager_cmd, "run", "my-script", "--flag", "value"
+      ])
     end
 
     it "includes the silent option" do
-      expect(manager.native_run_command("my-script", ["--flag", "value"], silent: true)).to eq(
-        "#{package_manager_cmd} run --silent my-script --flag value"
-      )
+      expect(manager.native_run_command("my-script", ["--flag", "value"], silent: true)).to eq([
+        package_manager_cmd, "run", "--silent", "my-script", "--flag", "value"
+      ])
     end
   end
 end

@@ -24,7 +24,7 @@ class PackageJson
           ?ignore_scripts: bool,
           ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool
-        ) -> String
+        ) -> Array[String]
 
       def add: (
           Array[String] packages,
@@ -72,7 +72,7 @@ class PackageJson
           String script_name,
           ?Array[String] args,
           ?silent: bool
-        ) -> String
+        ) -> Array[String]
 
       private
 

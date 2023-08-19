@@ -24,7 +24,7 @@ class PackageJson
           ?ignore_scripts: bool,
           ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool
-        ) -> String
+        ) -> Array[String]
 
       def add: (
           Array[String] packages,
@@ -72,14 +72,14 @@ class PackageJson
           String script_name,
           ?Array[String] args,
           ?silent: bool
-        ) -> String
+        ) -> Array[String]
 
       private
 
       @manager_cmd: String
       @package_json: PackageJson
 
-      def build_full_cmd: (String cmd, Array[String] args) -> String
+      def build_full_cmd: (String cmd, Array[String] args) -> Array[String]
 
       def raw: (String cmd, Array[String] args) -> (bool | nil)
     end

@@ -147,11 +147,11 @@ class PackageJson
       end
 
       def build_full_cmd(cmd, args)
-        [@manager_cmd, cmd, *args].join(" ")
+        [@manager_cmd, cmd, *args]
       end
 
       def raw(cmd, args)
-        Kernel.system(build_full_cmd(cmd, args), chdir: @package_json.path)
+        Kernel.system(build_full_cmd(cmd, args).join(" "), chdir: @package_json.path)
       end
     end
   end

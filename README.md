@@ -147,17 +147,21 @@ package_json.manager.install(frozen: true)
 | `legacy_peer_deps`   | Have `npm` completely ignore `peerDependencies` when installing; does nothing for other package managers |
 | `omit_optional_deps` | Omit optional dependencies when installing                                                               |
 
-### Generating the `install` command for embedding in native scripts
+### Generating the `install` command for native scripts and advanced calls
 
 ```ruby
+# returns an array of strings that make up the desired operation
 native_install_command = package_json.manager.native_install_command
+
+# runs the command with extra environment variables
+Kernel.system({ "HELLO" => "WORLD" }, *native_install_command)
 
 append_to_file "bin/ci-run" do
   <<~CMD
     echo "* ******************************************************"
     echo "* Installing JS dependencies"
     echo "* ******************************************************"
-    #{native_install_command}
+    #{native_install_command.join(" ")}
   CMD
 end
 ```
@@ -219,17 +223,20 @@ package_json.manager.run("lint", ["--fix"], silent: true)
 | -------- | ---------------------------------------- |
 | `silent` | Suppress output from the package manager |
 
-### Generating a run command for embedding in native scripts
+### Generating a `run` command for native scripts and advanced calls
 
 ```ruby
 native_run_command = package_json.manager.native_run_command("test", ["--coverage"])
+
+# runs the command with extra environment variables
+Kernel.system({ "HELLO" => "WORLD" }, *native_run_command)
 
 append_to_file "bin/ci-run" do
   <<~CMD
     echo "* ******************************************************"
     echo "* Running JS tests"
     echo "* ******************************************************"
-    #{native_run_command}
+    #{native_run_command.join(" ")}
   CMD
 end
 ```
