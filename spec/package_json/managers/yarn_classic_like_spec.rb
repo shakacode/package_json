@@ -89,6 +89,18 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
         end
       end
     end
+
+    context "when the current working directory is changed" do
+      it "interacts with the right package.json" do
+        manager # initialize the package.json in the current directory
+
+        within_subdirectory("subdir") do
+          File.write("package.json", "{},")
+
+          expect(manager.install).to be(true)
+        end
+      end
+    end
   end
 
   describe "#install!" do
@@ -263,6 +275,18 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
         end
       end
     end
+
+    context "when the current working directory is changed" do
+      it "interacts with the right package.json" do
+        manager # initialize the package.json in the current directory
+
+        within_subdirectory("subdir") do
+          File.write("package.json", "{},")
+
+          expect(manager.add(["example"])).to be(true)
+        end
+      end
+    end
   end
 
   describe "#add!" do
@@ -353,6 +377,26 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
 
           expect(result).to be(true)
           expect_manager_to_be_invoked_with("remove --ignore-scripts --ignore-optional example")
+        end
+      end
+    end
+
+    context "when the current working directory is changed" do
+      it "interacts with the right package.json" do
+        with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
+          manager # initialize the package.json in the current directory
+
+          within_subdirectory("subdir") do
+            File.write("package.json", "{},")
+
+            expect(manager.remove(["example"])).to be(true)
+          end
+
+          expect_package_json_with_content({
+            "dependencies" => {
+              "example2" => "^0.0.0"
+            }
+          })
         end
       end
     end
@@ -458,6 +502,23 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
         expect(result).to be(true)
         expect_manager_to_be_invoked_with("run --silent rspec-test-helper --silent value --flag")
         expect(File.read("package_json_run_script_helper.txt")).to eq('["--silent", "value", "--flag"]')
+      end
+    end
+
+    context "when the current working directory is changed" do
+      it "interacts with the right package.json" do
+        with_package_json_file({ "scripts" => { "rspec-test-helper" => "ruby helper.rb" } }) do
+          manager # initialize the package.json in the current directory
+
+          within_subdirectory("subdir") do
+            File.write("package.json", "{},")
+
+            expect(manager.run("rspec-test-helper")).to be(true)
+          end
+
+          expect_manager_to_be_invoked_with("run rspec-test-helper")
+          expect(File.read("package_json_run_script_helper.txt")).to eq("[]")
+        end
       end
     end
   end

@@ -27,7 +27,7 @@ class PackageJson
   end
 
   def initialize(path_to_directory = Dir.pwd, fallback_manager: PackageJson.fetch_default_fallback_manager)
-    @path = path_to_directory
+    @path = File.absolute_path(path_to_directory)
 
     ensure_package_json_exists(fallback_manager)
 

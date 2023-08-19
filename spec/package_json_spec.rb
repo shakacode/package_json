@@ -312,6 +312,18 @@ RSpec.describe PackageJson do
         end
       end
     end
+
+    context "when the current working directory is changed" do
+      it "interacts with the right package.json" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          package_json = described_class.new(".")
+
+          within_subdirectory("subdir") do
+            expect(package_json.fetch("version")).to eq("1.0.0")
+          end
+        end
+      end
+    end
   end
 
   describe "#merge!" do
@@ -378,6 +390,25 @@ RSpec.describe PackageJson do
         })
       end
     end
+
+    context "when the current working directory is changed" do
+      it "interacts with the right package.json" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          package_json = described_class.new(".")
+
+          within_subdirectory("subdir") do
+            package_json.merge! { |_| { "scripts" => { "lint" => "eslint ." } } }
+          end
+
+          expect_package_json_with_content({
+            "version" => "1.0.0",
+            "scripts" => {
+              "lint" => "eslint ."
+            }
+          })
+        end
+      end
+    end
   end
 
   describe "#delete!" do
@@ -410,6 +441,20 @@ RSpec.describe PackageJson do
         package_json = described_class.new
 
         expect(package_json.delete!("does not exist")).to be_nil
+      end
+    end
+
+    context "when the current working directory is changed" do
+      it "interacts with the right package.json" do
+        with_package_json_file({ "version" => "1.0.0", "babel" => { "presets" => ["path/to/my/preset"] } }) do
+          package_json = described_class.new(".")
+
+          within_subdirectory("subdir") do
+            package_json.delete!("babel")
+          end
+
+          expect_package_json_with_content({ "version" => "1.0.0" })
+        end
       end
     end
   end

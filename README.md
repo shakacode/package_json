@@ -116,6 +116,9 @@ Unless otherwise noted for a particular method, each method:
 - Can be passed any of the options listed for the particular method regardless
   of what underlying package manager is being used; if an option is not
   supported by the manager, it will be ignored
+- Will run in the directory of the `package.json`; for methods that generate
+  native commands, it is up to the caller to ensure the working directory is
+  correct
 
 ### Installing dependencies
 

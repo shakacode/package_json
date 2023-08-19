@@ -3,13 +3,14 @@ require "json"
 def allow_kernel_to_receive_system
   allow(Kernel).to receive(:system).and_wrap_original do |original_method, *args|
     # :nocov:
-    if ENV.fetch("PACKAGE_JSON_DEBUG", "false").downcase == "true"
-      original_method.call(*args)
-    else
-      # make things quieter by redirecting output to /dev/null
-      original_method.call(*args, 1 => File::NULL, 2 => File::NULL)
+    # make things quieter by redirecting output to /dev/null
+    unless ENV.fetch("PACKAGE_JSON_DEBUG", "false").downcase == "true"
+      args[1][1] = File::NULL
+      args[1][2] = File::NULL
     end
     # :nocov:
+
+    original_method.call(*args)
   end
 end
 
@@ -20,5 +21,8 @@ def expect_package_json_with_content(content)
 end
 
 def expect_manager_to_be_invoked_with(args)
-  expect(Kernel).to have_received(:system).with(match(/^#{package_manager_cmd} #{args}$/))
+  expect(Kernel).to have_received(:system).with(
+    match(/^#{package_manager_cmd} #{args}$/),
+    hash_including({ chdir: package_json.path })
+  )
 end
