@@ -94,7 +94,8 @@ If a fallback manager is not defined, then the value of the env variable
 `PACKAGE_JSON_FALLBACK_MANAGER` will be used if set, or otherwise falling back
 to `npm`.
 
-Supported package managers are `:npm`, `:yarn_classic`, and `:pnpm`.
+Supported package managers are `:npm`, `:yarn_berry`, `:yarn_classic`, and
+`:pnpm`.
 
 If the `package.json` does not exist, then the `packageManager` property will be
 included based on this value, but it will _not_ be updated if the file already
@@ -116,6 +117,8 @@ Unless otherwise noted for a particular method, each method:
 - Can be passed any of the options listed for the particular method regardless
   of what underlying package manager is being used; if an option is not
   supported by the manager, it will be ignored
+  - Note in the case of Yarn Berry most options have been either removed or
+    moved to the configuration file
 - Will run in the directory of the `package.json`; for methods that generate
   native commands, it is up to the caller to ensure the working directory is
   correct

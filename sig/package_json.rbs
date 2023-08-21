@@ -12,9 +12,9 @@ class PackageJson
 
   def self.fetch_default_fallback_manager: () -> Symbol
 
-  def self.read: (?String path_to_directory, ?package_manager: (:npm | :yarn_classic | :pnpm)) -> PackageJson
+  def self.read: (?String path_to_directory, ?package_manager: (:npm | :yarn_berry | :yarn_classic | :pnpm)) -> PackageJson
 
-  def initialize: (?String path_to_directory, ?package_manager: (:npm | :yarn_classic | :pnpm)) -> PackageJson
+  def initialize: (?String path_to_directory, ?package_manager: (:npm | :yarn_berry | :yarn_classic | :pnpm)) -> PackageJson
 
   def fetch: (String key, ?untyped default) -> (String | Hash[String, untyped] | Array[untyped])
 
@@ -26,7 +26,7 @@ class PackageJson
 
   def package_json_path: () -> String
 
-  def ensure_package_json_exists: ((:npm | :yarn_classic | :pnpm) package_manager) -> void
+  def ensure_package_json_exists: ((:npm | :yarn_berry | :yarn_classic | :pnpm) package_manager) -> void
 
   def read_package_json: () -> void
 

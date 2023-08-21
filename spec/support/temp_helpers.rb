@@ -1,7 +1,7 @@
 require "tmpdir"
 
-def within_temp_directory(&block)
-  Dir.mktmpdir("package_json-") do |dir|
+def within_temp_directory(tmpdir = nil, &block)
+  Dir.mktmpdir("package_json-", tmpdir) do |dir|
     Dir.chdir(dir, &block)
   end
 end

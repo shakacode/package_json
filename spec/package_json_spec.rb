@@ -55,17 +55,19 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "only supports yarn v1" do
-        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@2" }) do
-          expect { described_class.read }.to raise_error(PackageJson::Error, "only Yarn classic is supported")
-        end
-      end
-
-      it "supports a full version being specified for yarn" do
+      it "supports yarn classic" do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@1.2.3" }) do
           package_json = described_class.read
 
           expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "supports yarn berry" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@2.3.2" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnBerryLike
         end
       end
 
@@ -151,6 +153,12 @@ RSpec.describe PackageJson do
         expect_package_json_with_content({ "packageManager" => "npm" })
       end
 
+      it "sets packageManager correctly when the package manager is yarn (berry)" do
+        described_class.new(fallback_manager: :yarn_berry)
+
+        expect_package_json_with_content({ "packageManager" => "yarn@3" })
+      end
+
       it "sets packageManager correctly when the package manager is yarn (classic)" do
         described_class.new(fallback_manager: :yarn_classic)
 
@@ -208,13 +216,15 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "only supports yarn v1" do
-        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@2" }) do
-          expect { described_class.new }.to raise_error(PackageJson::Error, "only Yarn classic is supported")
+      it "supports yarn berry" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@2.3.2" }) do
+          package_json = described_class.new
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnBerryLike
         end
       end
 
-      it "supports a full version being specified for yarn" do
+      it "supports yarn classic" do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@1.2.3" }) do
           package_json = described_class.new
 

@@ -3,6 +3,7 @@
 require_relative "package_json/managers/base"
 require_relative "package_json/managers/npm_like"
 require_relative "package_json/managers/pnpm_like"
+require_relative "package_json/managers/yarn_berry_like"
 require_relative "package_json/managers/yarn_classic_like"
 require_relative "package_json/version"
 require "json"
@@ -43,9 +44,9 @@ class PackageJson
 
     if name == "yarn"
       raise Error, "a major version must be present for Yarn" if version.nil? || version.empty?
-      raise Error, "only Yarn classic is supported" unless version.start_with?("1")
+      return :yarn_classic if version.start_with?("1")
 
-      return :yarn_classic
+      return :yarn_berry
     end
 
     name.to_sym
@@ -55,6 +56,8 @@ class PackageJson
     case package_manager_name
     when :npm
       PackageJson::Managers::NpmLike.new(self)
+    when :yarn_berry
+      PackageJson::Managers::YarnBerryLike.new(self)
     when :yarn_classic
       PackageJson::Managers::YarnClassicLike.new(self)
     when :pnpm
@@ -101,6 +104,7 @@ class PackageJson
     return if File.exist?(package_json_path)
 
     pm = package_manager.to_s
+    pm = "yarn@3" if package_manager == :yarn_berry
     pm = "yarn@1" if package_manager == :yarn_classic
 
     write_package_json({ "packageManager" => pm })
