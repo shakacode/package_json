@@ -6,7 +6,7 @@ RSpec.describe PackageJson::Managers::YarnBerryLike do
   subject(:manager) { described_class.new(package_json) }
 
   let(:package_manager_binary) { "yarn" }
-  let(:package_json) { PackageJson.new }
+  let(:package_json) { instance_double(PackageJson, path: Dir.pwd) }
 
   # rubocop:disable RSpec/BeforeAfterAll
   before(:all) { setup_yarn_berry_project_template }
@@ -101,12 +101,14 @@ RSpec.describe PackageJson::Managers::YarnBerryLike do
 
     context "when the current working directory is changed" do
       it "interacts with the right package.json" do
-        manager # initialize the package.json in the current directory
+        with_package_json_file do
+          manager # initialize the package.json in the current directory
 
-        within_subdirectory("subdir") do
-          File.write("package.json", "{},")
+          within_subdirectory("subdir") do
+            File.write("package.json", "{},")
 
-          expect(manager.install).to be(true)
+            expect(manager.install).to be(true)
+          end
         end
       end
     end

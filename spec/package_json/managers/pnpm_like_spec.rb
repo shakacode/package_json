@@ -6,7 +6,7 @@ RSpec.describe PackageJson::Managers::PnpmLike do
   subject(:manager) { described_class.new(package_json) }
 
   let(:package_manager_binary) { "pnpm" }
-  let(:package_json) { PackageJson.new }
+  let(:package_json) { instance_double(PackageJson, path: Dir.pwd) }
 
   around { |example| within_temp_directory { example.run } }
 
@@ -98,12 +98,14 @@ RSpec.describe PackageJson::Managers::PnpmLike do
 
     context "when the current working directory is changed" do
       it "interacts with the right package.json" do
-        manager # initialize the package.json in the current directory
+        with_package_json_file do
+          manager # initialize the package.json in the current directory
 
-        within_subdirectory("subdir") do
-          File.write("package.json", "{},")
+          within_subdirectory("subdir") do
+            File.write("package.json", "{},")
 
-          expect(manager.install).to be(true)
+            expect(manager.install).to be(true)
+          end
         end
       end
     end
