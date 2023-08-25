@@ -1,8 +1,8 @@
 class PackageJson
   module Managers
     class YarnBerryLike < Base
-      def initialize(package_json, manager_cmd: "yarn")
-        super(package_json, manager_cmd: manager_cmd)
+      def initialize(package_json)
+        super(package_json, binary_name: "yarn")
       end
 
       # Installs the dependencies specified in the `package.json` file

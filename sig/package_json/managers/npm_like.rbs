@@ -1,7 +1,7 @@
 class PackageJson
   module Managers
     class NpmLike < Base
-      def initialize: (PackageJson package_json, ?manager_cmd: String) -> self
+      def initialize: (PackageJson package_json) -> self
 
       def version: () -> String
 

@@ -3,7 +3,13 @@
 require "spec_helper"
 
 RSpec.describe PackageJson::Managers::Base do
-  subject(:base) { described_class.new(instance_double(PackageJson), manager_cmd: "base") }
+  subject(:base) { described_class.new(instance_double(PackageJson), binary_name: "base") }
+
+  describe "#binary" do
+    it "returns the expected value" do
+      expect(base.binary).to be("base")
+    end
+  end
 
   describe "#version" do
     require "open3"

@@ -1,17 +1,20 @@
 class PackageJson
   module Managers
     class Base # rubocop:disable Metrics/ClassLength
-      def initialize(package_json, manager_cmd:)
+      # @return [String] the binary to invoke for running the package manager
+      attr_reader :binary
+
+      def initialize(package_json, binary_name:)
         # @type [PackageJson]
         @package_json = package_json
         # @type [String]
-        @manager_cmd = manager_cmd
+        @binary = binary_name
       end
 
       def version
         require "open3"
 
-        command = "#{@manager_cmd} --version"
+        command = "#{binary} --version"
         stdout, stderr, status = Open3.capture3(command)
 
         unless status.success?
@@ -143,15 +146,15 @@ class PackageJson
       private
 
       def raise_exited_with_non_zero_code_error
-        raise Error, "#{@manager_cmd} exited with non-zero code"
+        raise Error, "#{binary} exited with non-zero code"
       end
 
-      def build_full_cmd(cmd, args)
-        [@manager_cmd, cmd, *args]
+      def build_full_cmd(sub_cmd, args)
+        [binary, sub_cmd, *args]
       end
 
-      def raw(cmd, args)
-        Kernel.system(build_full_cmd(cmd, args).join(" "), chdir: @package_json.path)
+      def raw(sub_cmd, args)
+        Kernel.system(*build_full_cmd(sub_cmd, args), chdir: @package_json.path)
       end
     end
   end

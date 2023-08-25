@@ -3,9 +3,10 @@
 require "spec_helper"
 
 RSpec.describe PackageJson::Managers::YarnBerryLike do
-  subject(:manager) { described_class.new(package_json, manager_cmd: package_manager_cmd) }
+  subject(:manager) { described_class.new(package_json) }
 
-  let(:package_manager_cmd) { "npx -y yarn@1" }
+  let(:package_manager_binary) { "yarn" }
+  let(:package_manager_major) { "1" }
   let(:package_json) { PackageJson.new }
 
   # rubocop:disable RSpec/BeforeAfterAll
@@ -15,7 +16,7 @@ RSpec.describe PackageJson::Managers::YarnBerryLike do
 
   around { |example| within_temp_yarn_berry_project { example.run } }
 
-  before { allow_kernel_to_receive_system }
+  before { allow_kernel_to_receive_system_for_package_manager }
 
   describe "#version" do
     it "returns the version" do
@@ -134,31 +135,31 @@ RSpec.describe PackageJson::Managers::YarnBerryLike do
 
   describe "#native_install_command" do
     it "returns the full command" do
-      expect(manager.native_install_command).to eq([package_manager_cmd, "install", "--no-immutable"])
+      expect(manager.native_install_command).to eq([package_manager_binary, "install", "--no-immutable"])
     end
 
     context "when passing the usual options" do
       it "supports frozen" do
         expect(manager.native_install_command(frozen: true)).to eq(
-          [package_manager_cmd, "install", "--immutable"]
+          [package_manager_binary, "install", "--immutable"]
         )
       end
 
       it "supports ignore_scripts" do
         expect(manager.native_install_command(ignore_scripts: true)).to eq(
-          [package_manager_cmd, "install", "--no-immutable"]
+          [package_manager_binary, "install", "--no-immutable"]
         )
       end
 
       it "supports legacy_peer_deps" do
         expect(manager.native_install_command(legacy_peer_deps: true)).to eq(
-          [package_manager_cmd, "install", "--no-immutable"]
+          [package_manager_binary, "install", "--no-immutable"]
         )
       end
 
       it "supports omit_optional_deps" do
         expect(manager.native_install_command(omit_optional_deps: true)).to eq(
-          [package_manager_cmd, "install", "--no-immutable"]
+          [package_manager_binary, "install", "--no-immutable"]
         )
       end
 
@@ -170,7 +171,7 @@ RSpec.describe PackageJson::Managers::YarnBerryLike do
             legacy_peer_deps: true,
             omit_optional_deps: true
           )
-        ).to eq([package_manager_cmd, "install", "--immutable"])
+        ).to eq([package_manager_binary, "install", "--immutable"])
       end
     end
   end
@@ -567,18 +568,18 @@ RSpec.describe PackageJson::Managers::YarnBerryLike do
 
   describe "#native_run_command" do
     it "returns the full command" do
-      expect(manager.native_run_command("my-script")).to eq([package_manager_cmd, "run", "my-script"])
+      expect(manager.native_run_command("my-script")).to eq([package_manager_binary, "run", "my-script"])
     end
 
     it "includes args" do
       expect(manager.native_run_command("my-script", ["--flag", "value"])).to eq([
-        package_manager_cmd, "run", "my-script", "--flag", "value"
+        package_manager_binary, "run", "my-script", "--flag", "value"
       ])
     end
 
     it "includes the silent option" do
       expect(manager.native_run_command("my-script", ["--flag", "value"], silent: true)).to eq([
-        package_manager_cmd, "run", "my-script", "--flag", "value"
+        package_manager_binary, "run", "my-script", "--flag", "value"
       ])
     end
   end

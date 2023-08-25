@@ -3,14 +3,15 @@
 require "spec_helper"
 
 RSpec.describe PackageJson::Managers::YarnClassicLike do
-  subject(:manager) { described_class.new(package_json, manager_cmd: package_manager_cmd) }
+  subject(:manager) { described_class.new(package_json) }
 
-  let(:package_manager_cmd) { "npx -y yarn@1" }
+  let(:package_manager_binary) { "yarn" }
+  let(:package_manager_major) { "1" }
   let(:package_json) { PackageJson.new }
 
   around { |example| within_temp_directory { example.run } }
 
-  before { allow_kernel_to_receive_system }
+  before { allow_kernel_to_receive_system_for_package_manager }
 
   describe "#version" do
     it "returns the version" do
@@ -129,31 +130,31 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
 
   describe "#native_install_command" do
     it "returns the full command" do
-      expect(manager.native_install_command).to eq([package_manager_cmd, "install"])
+      expect(manager.native_install_command).to eq([package_manager_binary, "install"])
     end
 
     context "when passing the usual options" do
       it "supports frozen" do
         expect(manager.native_install_command(frozen: true)).to eq(
-          [package_manager_cmd, "install", "--frozen-lockfile"]
+          [package_manager_binary, "install", "--frozen-lockfile"]
         )
       end
 
       it "supports ignore_scripts" do
         expect(manager.native_install_command(ignore_scripts: true)).to eq(
-          [package_manager_cmd, "install", "--ignore-scripts"]
+          [package_manager_binary, "install", "--ignore-scripts"]
         )
       end
 
       it "supports legacy_peer_deps" do
         expect(manager.native_install_command(legacy_peer_deps: true)).to eq(
-          [package_manager_cmd, "install"]
+          [package_manager_binary, "install"]
         )
       end
 
       it "supports omit_optional_deps" do
         expect(manager.native_install_command(omit_optional_deps: true)).to eq(
-          [package_manager_cmd, "install", "--ignore-optional"]
+          [package_manager_binary, "install", "--ignore-optional"]
         )
       end
 
@@ -165,7 +166,7 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
             legacy_peer_deps: true,
             omit_optional_deps: true
           )
-        ).to eq([package_manager_cmd, "install", "--frozen-lockfile", "--ignore-scripts", "--ignore-optional"])
+        ).to eq([package_manager_binary, "install", "--frozen-lockfile", "--ignore-scripts", "--ignore-optional"])
       end
     end
   end
@@ -567,18 +568,18 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
 
   describe "#native_run_command" do
     it "returns the full command" do
-      expect(manager.native_run_command("my-script")).to eq([package_manager_cmd, "run", "my-script"])
+      expect(manager.native_run_command("my-script")).to eq([package_manager_binary, "run", "my-script"])
     end
 
     it "includes args" do
       expect(manager.native_run_command("my-script", ["--flag", "value"])).to eq([
-        package_manager_cmd, "run", "my-script", "--flag", "value"
+        package_manager_binary, "run", "my-script", "--flag", "value"
       ])
     end
 
     it "includes the silent option" do
       expect(manager.native_run_command("my-script", ["--flag", "value"], silent: true)).to eq([
-        package_manager_cmd, "run", "--silent", "my-script", "--flag", "value"
+        package_manager_binary, "run", "--silent", "my-script", "--flag", "value"
       ])
     end
   end
