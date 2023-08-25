@@ -1,16 +1,26 @@
 require "json"
 
+PACKAGE_MANAGER_MAP = {
+  "npm" => "9",
+  "yarn" => "1",
+  "pnpm" => "8"
+}.freeze
+
 def allow_open3_to_receive_capture3_for_package_manager
   require "open3"
 
   allow(Open3).to receive(:capture3).and_wrap_original do |original_method, *args|
+    pm_binary = args[0].split[0]
+
+    pm_major = PACKAGE_MANAGER_MAP[pm_binary]
+
     # :nocov:
-    raise "unexpected Open3.capture3 call" unless args[0].start_with?(package_manager_binary)
+    raise "unexpected Open3.capture3 call" unless pm_major
 
     # :nocov:
 
-    npx_cmd = npx_binary_cmd(package_manager_binary, package_manager_major).join(" ")
-    args[0] = "#{npx_cmd}#{args[0].delete_prefix(package_manager_binary)}"
+    npx_cmd = npx_binary_cmd(pm_binary, pm_major).join(" ")
+    args[0] = "#{npx_cmd}#{args[0].delete_prefix(pm_binary)}"
 
     original_method.call(*args)
   end
@@ -26,14 +36,17 @@ def allow_kernel_to_receive_system_for_package_manager
     end
     # :nocov:
 
+    pm_binary = args[0]
+    pm_major = PACKAGE_MANAGER_MAP[pm_binary]
+
     # :nocov:
-    raise "unexpected Kernel.system call" unless args[0] == package_manager_binary
+    raise "unexpected Kernel.system call" unless pm_major
 
     # :nocov:
 
     # use npx to ensure that the package manager is available
     args.shift
-    args.unshift(*npx_binary_cmd(package_manager_binary, package_manager_major))
+    args.unshift(*npx_binary_cmd(pm_binary, pm_major))
 
     original_method.call(*args)
   end

@@ -6,7 +6,6 @@ RSpec.describe PackageJson::Managers::YarnBerryLike do
   subject(:manager) { described_class.new(package_json) }
 
   let(:package_manager_binary) { "yarn" }
-  let(:package_manager_major) { "1" }
   let(:package_json) { PackageJson.new }
 
   # rubocop:disable RSpec/BeforeAfterAll
@@ -15,8 +14,6 @@ RSpec.describe PackageJson::Managers::YarnBerryLike do
   # rubocop:enable RSpec/BeforeAfterAll
 
   around { |example| within_temp_yarn_berry_project { example.run } }
-
-  before { allow_kernel_to_receive_system_for_package_manager }
 
   describe "#version" do
     it "returns the version" do

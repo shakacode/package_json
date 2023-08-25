@@ -6,12 +6,9 @@ RSpec.describe PackageJson::Managers::NpmLike do
   subject(:manager) { described_class.new(package_json) }
 
   let(:package_manager_binary) { "npm" }
-  let(:package_manager_major) { "9" }
   let(:package_json) { PackageJson.new }
 
   around { |example| within_temp_directory { example.run } }
-
-  before { allow_kernel_to_receive_system_for_package_manager }
 
   describe "#version" do
     it "returns the version" do

@@ -53,6 +53,11 @@ RSpec.configure do |config|
   # Disable RSpec exposing methods globally on `Module` and `main`
   config.disable_monkey_patching!
 
+  config.before do
+    allow_open3_to_receive_capture3_for_package_manager
+    allow_kernel_to_receive_system_for_package_manager
+  end
+
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
