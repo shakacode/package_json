@@ -144,31 +144,34 @@ RSpec.describe PackageJson do
       it "sets packageManager correctly when no fallback is explicitly provided" do
         described_class.new
 
-        expect_package_json_with_content({ "packageManager" => "npm" })
+        expect_package_json_with_content({ "packageManager" => start_with("npm@9.") })
       end
 
       it "sets packageManager correctly when the package manager is npm" do
         described_class.new(fallback_manager: :npm)
 
-        expect_package_json_with_content({ "packageManager" => "npm" })
+        expect_package_json_with_content({ "packageManager" => start_with("npm@9.") })
       end
 
       it "sets packageManager correctly when the package manager is yarn (berry)" do
-        described_class.new(fallback_manager: :yarn_berry)
+        within_temp_yarn_berry_project(within_example: true) do
+          File.unlink("package.json")
+          described_class.new(fallback_manager: :yarn_berry)
 
-        expect_package_json_with_content({ "packageManager" => "yarn@3" })
+          expect_package_json_with_content({ "packageManager" => start_with("yarn@3.") })
+        end
       end
 
       it "sets packageManager correctly when the package manager is yarn (classic)" do
         described_class.new(fallback_manager: :yarn_classic)
 
-        expect_package_json_with_content({ "packageManager" => "yarn@1" })
+        expect_package_json_with_content({ "packageManager" => start_with("yarn@1.") })
       end
 
       it "sets packageManager correctly when the package manager is pnpm" do
         described_class.new(fallback_manager: :pnpm)
 
-        expect_package_json_with_content({ "packageManager" => "pnpm" })
+        expect_package_json_with_content({ "packageManager" => start_with("pnpm@8.") })
       end
 
       it "raises an error if the fallback manager is not supported" do
@@ -464,6 +467,40 @@ RSpec.describe PackageJson do
           end
 
           expect_package_json_with_content({ "version" => "1.0.0" })
+        end
+      end
+    end
+  end
+
+  describe "#record_package_manager!" do
+    it "records the manager and exact version" do
+      with_package_json_file({}) do
+        package_json = described_class.new(fallback_manager: :pnpm)
+
+        package_json.record_package_manager!
+
+        expect_package_json_with_content({ "packageManager" => start_with("pnpm@8") })
+      end
+    end
+
+    context "when the packageManager property is already present" do
+      it "does not change the manager" do
+        with_package_json_file({ "packageManager" => "npm@1.2.3" }) do
+          package_json = described_class.new(fallback_manager: :yarn_classic)
+
+          package_json.record_package_manager!
+
+          expect_package_json_with_content({ "packageManager" => start_with("npm@") })
+        end
+      end
+
+      it "does update the version" do
+        with_package_json_file({ "packageManager" => "npm@1.2.3" }) do
+          package_json = described_class.new(fallback_manager: :yarn_classic)
+
+          package_json.record_package_manager!
+
+          expect_package_json_with_content({ "packageManager" => start_with("npm@9.") })
         end
       end
     end

@@ -45,11 +45,23 @@ def cleanup_yarn_berry_project_template
   FileUtils.rm_r(@yarn_berry_project_template)
 end
 
-def within_temp_yarn_berry_project
-  raise "yarn berry template project missing" if @yarn_berry_project_template.nil?
+def within_temp_yarn_berry_project(within_example: false)
+  if @yarn_berry_project_template.nil?
+    # :nocov:
+    raise "yarn berry template project missing" unless within_example
+
+    # :nocov:
+
+    setup_yarn_berry_project_template
+  end
 
   within_temp_directory do
     FileUtils.cp_r("#{@yarn_berry_project_template}/.", Dir.pwd)
     yield
   end
+ensure
+  # :nocov:
+  # Ruby <3.0 coverage doesn't seem to handle this section correctly
+  cleanup_yarn_berry_project_template if within_example
+  # :nocov:
 end

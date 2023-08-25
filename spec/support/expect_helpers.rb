@@ -36,17 +36,20 @@ def allow_kernel_to_receive_system_for_package_manager
     end
     # :nocov:
 
-    pm_binary = args[0]
-    pm_major = PACKAGE_MANAGER_MAP[pm_binary]
+    # allow initializing the yarn berry template
+    unless args.join(" ").start_with?("npx -y yarn@1 init -2")
+      pm_binary = args[0]
+      pm_major = PACKAGE_MANAGER_MAP[pm_binary]
 
-    # :nocov:
-    raise "unexpected Kernel.system call" unless pm_major
+      # :nocov:
+      raise "unexpected Kernel.system call" unless pm_major
 
-    # :nocov:
+      # :nocov:
 
-    # use npx to ensure that the package manager is available
-    args.shift
-    args.unshift(*npx_binary_cmd(pm_binary, pm_major))
+      # use npx to ensure that the package manager is available
+      args.shift
+      args.unshift(*npx_binary_cmd(pm_binary, pm_major))
+    end
 
     original_method.call(*args)
   end
@@ -59,7 +62,7 @@ end
 def expect_package_json_with_content(content)
   expect(File.exist?("package.json")).to be(true)
 
-  expect(JSON.parse(File.read("package.json"))).to eq(content)
+  expect(JSON.parse(File.read("package.json"))).to match(content)
 end
 
 def expect_manager_to_be_invoked_with(args)

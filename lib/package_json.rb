@@ -30,9 +30,12 @@ class PackageJson
   def initialize(path_to_directory = Dir.pwd, fallback_manager: PackageJson.fetch_default_fallback_manager)
     @path = File.absolute_path(path_to_directory)
 
-    ensure_package_json_exists(fallback_manager)
+    existed = ensure_package_json_exists
 
     @manager = new_package_manager(determine_package_manager(fallback_manager))
+
+    # only record the packageManager automatically if we created the package.json
+    record_package_manager! unless existed
   end
 
   def determine_package_manager(fallback_manager)
@@ -94,20 +97,22 @@ class PackageJson
     value
   end
 
+  def record_package_manager!
+    merge! { { "packageManager" => "#{manager.binary}@#{manager.version}" } }
+  end
+
   private
 
   def package_json_path
     "#{path}/package.json"
   end
 
-  def ensure_package_json_exists(package_manager)
-    return if File.exist?(package_json_path)
+  def ensure_package_json_exists
+    return true if File.exist?(package_json_path)
 
-    pm = package_manager.to_s
-    pm = "yarn@3" if package_manager == :yarn_berry
-    pm = "yarn@1" if package_manager == :yarn_classic
+    write_package_json({})
 
-    write_package_json({ "packageManager" => pm })
+    false
   end
 
   def read_package_json
