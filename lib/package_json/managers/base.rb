@@ -28,7 +28,6 @@ class PackageJson
       def install(
         frozen: false,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         raise NotImplementedError
@@ -38,7 +37,6 @@ class PackageJson
       def native_install_command(
         frozen: false,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         raise NotImplementedError
@@ -48,13 +46,11 @@ class PackageJson
       def install!(
         frozen: false,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         raise_exited_with_non_zero_code_error unless install(
           frozen: frozen,
           ignore_scripts: ignore_scripts,
-          legacy_peer_deps: legacy_peer_deps,
           omit_optional_deps: omit_optional_deps
         )
       end
@@ -64,7 +60,6 @@ class PackageJson
         packages,
         type: :production,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         raise NotImplementedError
@@ -75,14 +70,12 @@ class PackageJson
         packages,
         type: :production,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         raise_exited_with_non_zero_code_error unless add(
           packages,
           type: type,
           ignore_scripts: ignore_scripts,
-          legacy_peer_deps: legacy_peer_deps,
           omit_optional_deps: omit_optional_deps
         )
       end
@@ -91,7 +84,6 @@ class PackageJson
       def remove(
         packages,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         raise NotImplementedError
@@ -101,13 +93,11 @@ class PackageJson
       def remove!(
         packages,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         raise_exited_with_non_zero_code_error unless remove(
           packages,
           ignore_scripts: ignore_scripts,
-          legacy_peer_deps: legacy_peer_deps,
           omit_optional_deps: omit_optional_deps
         )
       end

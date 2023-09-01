@@ -9,7 +9,6 @@ class PackageJson
       def install(
         frozen: false,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         cmd = "install"
@@ -17,7 +16,6 @@ class PackageJson
 
         args = with_native_args(
           ignore_scripts: ignore_scripts,
-          legacy_peer_deps: legacy_peer_deps,
           omit_optional_deps: omit_optional_deps
         )
 
@@ -28,7 +26,6 @@ class PackageJson
       def native_install_command(
         frozen: false,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         cmd = "install"
@@ -36,7 +33,6 @@ class PackageJson
 
         args = with_native_args(
           ignore_scripts: ignore_scripts,
-          legacy_peer_deps: legacy_peer_deps,
           omit_optional_deps: omit_optional_deps
         )
 
@@ -48,13 +44,11 @@ class PackageJson
         packages,
         type: :production,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         args = with_native_args(
           package_type_install_flag(type),
           ignore_scripts: ignore_scripts,
-          legacy_peer_deps: legacy_peer_deps,
           omit_optional_deps: omit_optional_deps
         )
 
@@ -65,12 +59,10 @@ class PackageJson
       def remove(
         packages,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         args = with_native_args(
           ignore_scripts: ignore_scripts,
-          legacy_peer_deps: legacy_peer_deps,
           omit_optional_deps: omit_optional_deps
         )
 
@@ -115,14 +107,12 @@ class PackageJson
       def with_native_args(
         *extra_args,
         ignore_scripts: nil,
-        legacy_peer_deps: nil,
         omit_optional_deps: nil,
         _unsupported: []
       )
         args = [*extra_args]
 
         args << "--ignore-scripts" if ignore_scripts
-        args << "--legacy-peer-deps" if legacy_peer_deps
         args << "--omit=optional" if omit_optional_deps
 
         args.compact

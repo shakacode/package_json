@@ -9,12 +9,11 @@ class PackageJson
       def install(
         frozen: false,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         args = with_native_args(
           frozen: frozen,
-          _unsupported: [legacy_peer_deps, ignore_scripts, omit_optional_deps]
+          _unsupported: [ignore_scripts, omit_optional_deps]
         )
 
         raw("install", args)
@@ -24,12 +23,11 @@ class PackageJson
       def native_install_command(
         frozen: false,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         args = with_native_args(
           frozen: frozen,
-          _unsupported: [legacy_peer_deps, ignore_scripts, omit_optional_deps]
+          _unsupported: [ignore_scripts, omit_optional_deps]
         )
 
         build_full_cmd("install", args)
@@ -40,12 +38,11 @@ class PackageJson
         packages,
         type: :production,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         args = with_native_args(
           package_type_install_flag(type),
-          _unsupported: [legacy_peer_deps, ignore_scripts, omit_optional_deps]
+          _unsupported: [ignore_scripts, omit_optional_deps]
         )
 
         raw("add", args + packages)
@@ -55,11 +52,10 @@ class PackageJson
       def remove(
         packages,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         args = with_native_args(
-          _unsupported: [legacy_peer_deps, ignore_scripts, omit_optional_deps]
+          _unsupported: [ignore_scripts, omit_optional_deps]
         )
 
         raw("remove", args + packages)

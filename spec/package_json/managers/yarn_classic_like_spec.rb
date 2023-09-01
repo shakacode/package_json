@@ -58,15 +58,6 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
         end
       end
 
-      it "supports legacy_peer_deps" do
-        with_package_json_file do
-          result = manager.install(legacy_peer_deps: true)
-
-          expect(result).to be(true)
-          expect_manager_to_be_invoked_with("install")
-        end
-      end
-
       it "supports omit_optional_deps" do
         with_package_json_file do
           result = manager.install(omit_optional_deps: true)
@@ -84,7 +75,6 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
           result = manager.install(
             frozen: true,
             ignore_scripts: true,
-            legacy_peer_deps: true,
             omit_optional_deps: true
           )
 
@@ -145,12 +135,6 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
         )
       end
 
-      it "supports legacy_peer_deps" do
-        expect(manager.native_install_command(legacy_peer_deps: true)).to eq(
-          [package_manager_binary, "install"]
-        )
-      end
-
       it "supports omit_optional_deps" do
         expect(manager.native_install_command(omit_optional_deps: true)).to eq(
           [package_manager_binary, "install", "--ignore-optional"]
@@ -162,7 +146,6 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
           manager.native_install_command(
             frozen: true,
             ignore_scripts: true,
-            legacy_peer_deps: true,
             omit_optional_deps: true
           )
         ).to eq([package_manager_binary, "install", "--frozen-lockfile", "--ignore-scripts", "--ignore-optional"])
@@ -249,15 +232,6 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
         end
       end
 
-      it "supports legacy_peer_deps" do
-        with_package_json_file do
-          result = manager.add(["example"], legacy_peer_deps: true)
-
-          expect(result).to be(true)
-          expect_manager_to_be_invoked_with("add example")
-        end
-      end
-
       it "supports omit_optional_deps" do
         with_package_json_file do
           result = manager.add(["example"], omit_optional_deps: true)
@@ -272,7 +246,6 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
           result = manager.add(
             ["example"],
             ignore_scripts: true,
-            legacy_peer_deps: true,
             omit_optional_deps: true
           )
 
@@ -354,15 +327,6 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
         end
       end
 
-      it "supports legacy_peer_deps" do
-        with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
-          result = manager.remove(["example"], legacy_peer_deps: true)
-
-          expect(result).to be(true)
-          expect_manager_to_be_invoked_with("remove example")
-        end
-      end
-
       it "supports omit_optional_deps" do
         with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
           result = manager.remove(["example"], omit_optional_deps: true)
@@ -377,7 +341,6 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
           result = manager.remove(
             ["example"],
             ignore_scripts: true,
-            legacy_peer_deps: true,
             omit_optional_deps: true
           )
 

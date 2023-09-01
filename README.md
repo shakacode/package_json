@@ -143,12 +143,11 @@ package_json.manager.install
 package_json.manager.install(frozen: true)
 ```
 
-| Option               | Description                                                                                              |
-| -------------------- | -------------------------------------------------------------------------------------------------------- |
-| `frozen`             | Fail if the lockfile needs to be updated                                                                 |
-| `ignore_scripts`     | Don't run scripts specified in `package.json` files                                                      |
-| `legacy_peer_deps`   | Have `npm` completely ignore `peerDependencies` when installing; does nothing for other package managers |
-| `omit_optional_deps` | Omit optional dependencies when installing                                                               |
+| Option               | Description                                         |
+| -------------------- | --------------------------------------------------- |
+| `frozen`             | Fail if the lockfile needs to be updated            |
+| `ignore_scripts`     | Don't run scripts specified in `package.json` files |
+| `omit_optional_deps` | Omit optional dependencies when installing          |
 
 ### Generating the `install` command for native scripts and advanced calls
 
@@ -169,12 +168,11 @@ append_to_file "bin/ci-run" do
 end
 ```
 
-| Option               | Description                                                                                              |
-| -------------------- | -------------------------------------------------------------------------------------------------------- |
-| `frozen`             | Fail if the lockfile needs to be updated                                                                 |
-| `ignore_scripts`     | Don't run scripts specified in `package.json` files                                                      |
-| `legacy_peer_deps`   | Have `npm` completely ignore `peerDependencies` when installing; does nothing for other package managers |
-| `omit_optional_deps` | Omit optional dependencies when installing                                                               |
+| Option               | Description                                         |
+| -------------------- | --------------------------------------------------- |
+| `frozen`             | Fail if the lockfile needs to be updated            |
+| `ignore_scripts`     | Don't run scripts specified in `package.json` files |
+| `omit_optional_deps` | Omit optional dependencies when installing          |
 
 ### Adding dependencies
 
@@ -189,12 +187,11 @@ package_json.manager.add(["eslint", "prettier"], type: :dev)
 package_json.manager.add(["dotenv-webpack@^6"])
 ```
 
-| Option               | Description                                                                                              |
-| -------------------- | -------------------------------------------------------------------------------------------------------- |
-| `type`               | The type to add the dependencies as; either `:production` (default), `:dev`, or `:optional`              |
-| `ignore_scripts`     | Don't run scripts specified in `package.json` files                                                      |
-| `legacy_peer_deps`   | Have `npm` completely ignore `peerDependencies` when installing; does nothing for other package managers |
-| `omit_optional_deps` | Omit optional dependencies when installing                                                               |
+| Option               | Description                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| `type`               | The type to add the dependencies as; either `:production` (default), `:dev`, or `:optional` |
+| `ignore_scripts`     | Don't run scripts specified in `package.json` files                                         |
+| `omit_optional_deps` | Omit optional dependencies when installing                                                  |
 
 ### Removing dependencies
 
@@ -203,11 +200,10 @@ package_json.manager.add(["dotenv-webpack@^6"])
 package_json.manager.remove(["axios"])
 ```
 
-| Option               | Description                                                                                              |
-| -------------------- | -------------------------------------------------------------------------------------------------------- |
-| `ignore_scripts`     | Don't run scripts specified in `package.json` files                                                      |
-| `legacy_peer_deps`   | Have `npm` completely ignore `peerDependencies` when installing; does nothing for other package managers |
-| `omit_optional_deps` | Omit optional dependencies when installing                                                               |
+| Option               | Description                                         |
+| -------------------- | --------------------------------------------------- |
+| `ignore_scripts`     | Don't run scripts specified in `package.json` files |
+| `omit_optional_deps` | Omit optional dependencies when installing          |
 
 ### Run a script
 

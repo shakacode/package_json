@@ -10,21 +10,18 @@ class PackageJson
       def install: (
           ?frozen: bool,
           ?ignore_scripts: bool,
-          ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool
         ) -> (bool | nil)
 
       def install!: (
           ?frozen: bool,
           ?ignore_scripts: bool,
-          ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool
         ) -> void
 
       def native_install_command: (
           ?frozen: bool,
           ?ignore_scripts: bool,
-          ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool
         ) -> Array[String]
 
@@ -32,7 +29,6 @@ class PackageJson
           Array[String] packages,
           ?type: :production | :dev | :optional,
           ?ignore_scripts: bool,
-          ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool
         ) -> (bool | nil)
 
@@ -40,21 +36,18 @@ class PackageJson
           Array[String] packages,
           ?type: :production | :dev | :optional,
           ?ignore_scripts: bool,
-          ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool
         ) -> void
 
       def remove: (
           Array[String] packages,
           ?ignore_scripts: bool,
-          ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool
         ) -> (bool | nil)
 
       def remove!: (
           Array[String] packages,
           ?ignore_scripts: bool,
-          ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool
         ) -> void
 

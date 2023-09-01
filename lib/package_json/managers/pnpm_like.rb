@@ -9,14 +9,13 @@ class PackageJson
       def install(
         frozen: false,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         args = with_native_args(
           frozen: frozen,
           ignore_scripts: ignore_scripts,
           omit_optional_deps: omit_optional_deps,
-          _unsupported: [legacy_peer_deps]
+          _unsupported: []
         )
 
         raw("install", args)
@@ -26,14 +25,13 @@ class PackageJson
       def native_install_command(
         frozen: false,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         args = with_native_args(
           frozen: frozen,
           ignore_scripts: ignore_scripts,
           omit_optional_deps: omit_optional_deps,
-          _unsupported: [legacy_peer_deps]
+          _unsupported: []
         )
 
         build_full_cmd("install", args)
@@ -44,14 +42,13 @@ class PackageJson
         packages,
         type: :production,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         args = with_native_args(
           package_type_install_flag(type),
           ignore_scripts: ignore_scripts,
           omit_optional_deps: omit_optional_deps,
-          _unsupported: [legacy_peer_deps]
+          _unsupported: []
         )
 
         raw("add", args + packages)
@@ -61,12 +58,11 @@ class PackageJson
       def remove(
         packages,
         ignore_scripts: false,
-        legacy_peer_deps: false,
         omit_optional_deps: false
       )
         args = with_native_args(
           # "pnpm remove" doesn't support any of these options
-          _unsupported: [ignore_scripts, legacy_peer_deps, omit_optional_deps]
+          _unsupported: [ignore_scripts, omit_optional_deps]
         )
 
         raw("remove", args + packages)
