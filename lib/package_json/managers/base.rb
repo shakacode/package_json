@@ -15,7 +15,7 @@ class PackageJson
         require "open3"
 
         command = "#{binary} --version"
-        stdout, stderr, status = Open3.capture3(command)
+        stdout, stderr, status = Open3.capture3(command, chdir: @package_json.directory)
 
         unless status.success?
           raise PackageJson::Error, "#{command} failed with exit code #{status.exitstatus}: #{stderr}"

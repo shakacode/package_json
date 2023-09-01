@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe PackageJson::Managers::Base do
-  subject(:base) { described_class.new(instance_double(PackageJson), binary_name: "base") }
+  subject(:base) { described_class.new(instance_double(PackageJson, directory: Dir.pwd), binary_name: "base") }
 
   describe "#binary" do
     it "returns the expected value" do
@@ -19,7 +19,7 @@ RSpec.describe PackageJson::Managers::Base do
     it "calls the package manager with --version" do
       base.version
 
-      expect(Open3).to have_received(:capture3).with("base --version")
+      expect(Open3).to have_received(:capture3).with("base --version", chdir: Dir.pwd)
     end
 
     it "returns the output without a trailing newline" do
