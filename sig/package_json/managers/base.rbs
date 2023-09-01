@@ -30,7 +30,7 @@ class PackageJson
 
       def add: (
           Array[String] packages,
-          ?type: :production | :dev | :optional | :peer,
+          ?type: :production | :dev | :optional,
           ?ignore_scripts: bool,
           ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool
@@ -38,7 +38,7 @@ class PackageJson
 
       def add!: (
           Array[String] packages,
-          ?type: :production | :dev | :optional | :peer,
+          ?type: :production | :dev | :optional,
           ?ignore_scripts: bool,
           ?legacy_peer_deps: bool,
           ?omit_optional_deps: bool

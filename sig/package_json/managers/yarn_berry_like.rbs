@@ -8,7 +8,7 @@ class PackageJson
       def build_run_args: (
           String script_name,
           Array[String] args,
-          silent: bool
+          _silent: bool
         ) -> Array[String]
 
       def with_native_args: (

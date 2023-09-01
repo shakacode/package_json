@@ -191,7 +191,7 @@ package_json.manager.add(["dotenv-webpack@^6"])
 
 | Option               | Description                                                                                              |
 | -------------------- | -------------------------------------------------------------------------------------------------------- |
-| `type`               | The type to add the dependencies as; either `:production` (default), `:dev`, `:optional`, or `:peer`     |
+| `type`               | The type to add the dependencies as; either `:production` (default), `:dev`, or `:optional`              |
 | `ignore_scripts`     | Don't run scripts specified in `package.json` files                                                      |
 | `legacy_peer_deps`   | Have `npm` completely ignore `peerDependencies` when installing; does nothing for other package managers |
 | `omit_optional_deps` | Omit optional dependencies when installing                                                               |
