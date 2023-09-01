@@ -6,59 +6,23 @@ class PackageJson
       end
 
       # Installs the dependencies specified in the `package.json` file
-      def install(
-        frozen: false,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
-        args = with_native_args(
-          frozen: frozen,
-          _unsupported: [ignore_scripts, omit_optional_deps]
-        )
-
-        raw("install", args)
+      def install(frozen: false)
+        raw("install", with_frozen_flag(frozen))
       end
 
       # Provides the "native" command for installing dependencies with this package manager for embedding into scripts
-      def native_install_command(
-        frozen: false,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
-        args = with_native_args(
-          frozen: frozen,
-          _unsupported: [ignore_scripts, omit_optional_deps]
-        )
-
-        build_full_cmd("install", args)
+      def native_install_command(frozen: false)
+        build_full_cmd("install", with_frozen_flag(frozen))
       end
 
       # Adds the given packages
-      def add(
-        packages,
-        type: :production,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
-        args = with_native_args(
-          package_type_install_flag(type),
-          _unsupported: [ignore_scripts, omit_optional_deps]
-        )
-
-        raw("add", args + packages)
+      def add(packages, type: :production)
+        raw("add", [package_type_install_flag(type)].compact + packages)
       end
 
       # Removes the given packages
-      def remove(
-        packages,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
-        args = with_native_args(
-          _unsupported: [ignore_scripts, omit_optional_deps]
-        )
-
-        raw("remove", args + packages)
+      def remove(packages)
+        raw("remove", packages)
       end
 
       # Runs the script assuming it is defined in the `package.json` file
@@ -92,23 +56,12 @@ class PackageJson
         [script_name, *args]
       end
 
-      def with_native_args(
-        *extra_args,
-        frozen: nil,
-        _unsupported: []
-      )
-        args = [*extra_args]
+      def with_frozen_flag(frozen)
+        return ["--immutable"] if frozen
 
         # we make frozen lockfile behaviour consistent with the other package managers as
         # yarn berry automatically enables frozen lockfile if it detects it's running in CI
-        unless frozen.nil?
-          flag = "--no-immutable"
-          flag = "--immutable" if frozen
-
-          args << flag
-        end
-
-        args.compact
+        ["--no-immutable"]
       end
 
       def package_type_install_flag(type)

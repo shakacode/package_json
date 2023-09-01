@@ -1,6 +1,6 @@
 class PackageJson
   module Managers
-    class Base # rubocop:disable Metrics/ClassLength
+    class Base
       # @return [String] the binary to invoke for running the package manager
       attr_reader :binary
 
@@ -25,81 +25,40 @@ class PackageJson
       end
 
       # Installs the dependencies specified in the `package.json` file
-      def install(
-        frozen: false,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
+      def install(frozen: false)
         raise NotImplementedError
       end
 
       # Provides the "native" command for installing dependencies with this package manager for embedding into scripts
-      def native_install_command(
-        frozen: false,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
+      def native_install_command(frozen: false)
         raise NotImplementedError
       end
 
       # Installs the dependencies specified in the `package.json` file
-      def install!(
-        frozen: false,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
-        raise_exited_with_non_zero_code_error unless install(
-          frozen: frozen,
-          ignore_scripts: ignore_scripts,
-          omit_optional_deps: omit_optional_deps
-        )
+      def install!(frozen: false)
+        raise_exited_with_non_zero_code_error unless install(frozen: frozen)
       end
 
       # Adds the given packages
-      def add(
-        packages,
-        type: :production,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
+      def add(packages, type: :production)
         raise NotImplementedError
       end
 
       # Adds the given packages
-      def add!(
-        packages,
-        type: :production,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
-        raise_exited_with_non_zero_code_error unless add(
-          packages,
-          type: type,
-          ignore_scripts: ignore_scripts,
-          omit_optional_deps: omit_optional_deps
-        )
+      def add!(packages, type: :production)
+        raise_exited_with_non_zero_code_error unless add(packages, type: type)
       end
 
       # Removes the given packages
-      def remove(
-        packages,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
+      def remove(packages)
         raise NotImplementedError
       end
 
       # Removes the given packages
       def remove!(
-        packages,
-        ignore_scripts: false,
-        omit_optional_deps: false
+        packages
       )
-        raise_exited_with_non_zero_code_error unless remove(
-          packages,
-          ignore_scripts: ignore_scripts,
-          omit_optional_deps: omit_optional_deps
-        )
+        raise_exited_with_non_zero_code_error unless remove(packages)
       end
 
       # Runs the script assuming it is defined in the `package.json` file

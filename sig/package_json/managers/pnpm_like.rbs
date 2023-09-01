@@ -11,13 +11,7 @@ class PackageJson
           silent: bool
         ) -> Array[String]
 
-      def with_native_args: (
-          *(String | nil) extra_args,
-          ?frozen: bool | nil,
-          ?ignore_scripts: bool | nil,
-          ?omit_optional_deps: bool | nil,
-          ?_unsupported: Array[untyped]
-        ) -> Array[String]
+      def with_frozen_flag: (bool frozen) -> Array[String]
 
       def package_type_install_flag: (Symbol type) -> String
     end

@@ -7,49 +7,19 @@ class PackageJson
 
       def version: () -> String
 
-      def install: (
-          ?frozen: bool,
-          ?ignore_scripts: bool,
-          ?omit_optional_deps: bool
-        ) -> (bool | nil)
+      def install: (?frozen: bool) -> (bool | nil)
 
-      def install!: (
-          ?frozen: bool,
-          ?ignore_scripts: bool,
-          ?omit_optional_deps: bool
-        ) -> void
+      def install!: (?frozen: bool) -> void
 
-      def native_install_command: (
-          ?frozen: bool,
-          ?ignore_scripts: bool,
-          ?omit_optional_deps: bool
-        ) -> Array[String]
+      def native_install_command: (?frozen: bool) -> Array[String]
 
-      def add: (
-          Array[String] packages,
-          ?type: :production | :dev | :optional,
-          ?ignore_scripts: bool,
-          ?omit_optional_deps: bool
-        ) -> (bool | nil)
+      def add: (Array[String] packages, ?type: :production | :dev | :optional) -> (bool | nil)
 
-      def add!: (
-          Array[String] packages,
-          ?type: :production | :dev | :optional,
-          ?ignore_scripts: bool,
-          ?omit_optional_deps: bool
-        ) -> void
+      def add!: (Array[String] packages, ?type: :production | :dev | :optional) -> void
 
-      def remove: (
-          Array[String] packages,
-          ?ignore_scripts: bool,
-          ?omit_optional_deps: bool
-        ) -> (bool | nil)
+      def remove: (Array[String] packages) -> (bool | nil)
 
-      def remove!: (
-          Array[String] packages,
-          ?ignore_scripts: bool,
-          ?omit_optional_deps: bool
-        ) -> void
+      def remove!: (Array[String] packages) -> void
 
       def run: (
           String script_name,

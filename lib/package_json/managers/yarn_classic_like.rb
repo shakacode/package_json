@@ -1,72 +1,28 @@
 class PackageJson
   module Managers
-    class YarnClassicLike < Base # rubocop:disable Metrics/ClassLength
+    class YarnClassicLike < Base
       def initialize(package_json)
         super(package_json, binary_name: "yarn")
       end
 
       # Installs the dependencies specified in the `package.json` file
-      def install(
-        frozen: false,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
-        args = with_native_args(
-          frozen: frozen,
-          ignore_scripts: ignore_scripts,
-          omit_optional_deps: omit_optional_deps,
-          _unsupported: []
-        )
-
-        raw("install", args)
+      def install(frozen: false)
+        raw("install", with_frozen_flag(frozen))
       end
 
       # Provides the "native" command for installing dependencies with this package manager for embedding into scripts
-      def native_install_command(
-        frozen: false,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
-        args = with_native_args(
-          frozen: frozen,
-          ignore_scripts: ignore_scripts,
-          omit_optional_deps: omit_optional_deps,
-          _unsupported: []
-        )
-
-        build_full_cmd("install", args)
+      def native_install_command(frozen: false)
+        build_full_cmd("install", with_frozen_flag(frozen))
       end
 
       # Adds the given packages
-      def add(
-        packages,
-        type: :production,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
-        args = with_native_args(
-          package_type_install_flag(type),
-          ignore_scripts: ignore_scripts,
-          omit_optional_deps: omit_optional_deps,
-          _unsupported: []
-        )
-
-        raw("add", args + packages)
+      def add(packages, type: :production)
+        raw("add", [package_type_install_flag(type)].compact + packages)
       end
 
       # Removes the given packages
-      def remove(
-        packages,
-        ignore_scripts: false,
-        omit_optional_deps: false
-      )
-        args = with_native_args(
-          ignore_scripts: ignore_scripts,
-          omit_optional_deps: omit_optional_deps,
-          _unsupported: []
-        )
-
-        raw("remove", args + packages)
+      def remove(packages)
+        raw("remove", packages)
       end
 
       # Runs the script assuming it is defined in the `package.json` file
@@ -116,20 +72,10 @@ class PackageJson
         args
       end
 
-      def with_native_args(
-        *extra_args,
-        frozen: nil,
-        ignore_scripts: nil,
-        omit_optional_deps: nil,
-        _unsupported: []
-      )
-        args = [*extra_args]
+      def with_frozen_flag(frozen)
+        return ["--frozen-lockfile"] if frozen
 
-        args << "--frozen-lockfile" if frozen
-        args << "--ignore-scripts" if ignore_scripts
-        args << "--ignore-optional" if omit_optional_deps
-
-        args.compact
+        []
       end
 
       def package_type_install_flag(type)

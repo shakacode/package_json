@@ -26,6 +26,18 @@ RSpec.describe PackageJson::Managers::NpmLike do
       end
     end
 
+    it "supports frozen" do
+      with_package_json_file do
+        # frozen requires that a lockfile exist
+        File.write("package-lock.json", "{}")
+
+        result = manager.install(frozen: true)
+
+        expect(result).to be(true)
+        expect_manager_to_be_invoked_with("ci")
+      end
+    end
+
     context "when there is an error" do
       it "returns false" do
         manager # ensure the package.json is valid when the manager is created
@@ -33,54 +45,6 @@ RSpec.describe PackageJson::Managers::NpmLike do
         File.write("package.json", "{},")
 
         expect(manager.install).to be(false)
-      end
-    end
-
-    context "when passing the usual options" do
-      it "supports frozen" do
-        with_package_json_file do
-          # frozen requires that a lockfile exist
-          File.write("package-lock.json", "{}")
-
-          result = manager.install(frozen: true)
-
-          expect(result).to be(true)
-          expect_manager_to_be_invoked_with("ci")
-        end
-      end
-
-      it "supports ignore_scripts" do
-        with_package_json_file do
-          result = manager.install(ignore_scripts: true)
-
-          expect(result).to be(true)
-          expect_manager_to_be_invoked_with("install --ignore-scripts")
-        end
-      end
-
-      it "supports omit_optional_deps" do
-        with_package_json_file do
-          result = manager.install(omit_optional_deps: true)
-
-          expect(result).to be(true)
-          expect_manager_to_be_invoked_with("install --omit=optional")
-        end
-      end
-
-      it "supports all the options together" do
-        with_package_json_file do
-          # frozen requires that a lockfile exist
-          File.write("package-lock.json", "{}")
-
-          result = manager.install(
-            frozen: true,
-            ignore_scripts: true,
-            omit_optional_deps: true
-          )
-
-          expect(result).to be(true)
-          expect_manager_to_be_invoked_with("ci --ignore-scripts --omit=optional")
-        end
       end
     end
 
@@ -122,34 +86,10 @@ RSpec.describe PackageJson::Managers::NpmLike do
       expect(manager.native_install_command).to eq([package_manager_binary, "install"])
     end
 
-    context "when passing the usual options" do
-      it "supports frozen" do
-        expect(manager.native_install_command(frozen: true)).to eq(
-          [package_manager_binary, "ci"]
-        )
-      end
-
-      it "supports ignore_scripts" do
-        expect(manager.native_install_command(ignore_scripts: true)).to eq(
-          [package_manager_binary, "install", "--ignore-scripts"]
-        )
-      end
-
-      it "supports omit_optional_deps" do
-        expect(manager.native_install_command(omit_optional_deps: true)).to eq(
-          [package_manager_binary, "install", "--omit=optional"]
-        )
-      end
-
-      it "supports all the options together" do
-        expect(
-          manager.native_install_command(
-            frozen: true,
-            ignore_scripts: true,
-            omit_optional_deps: true
-          )
-        ).to eq([package_manager_binary, "ci", "--ignore-scripts", "--omit=optional"])
-      end
+    it "supports frozen" do
+      expect(manager.native_install_command(frozen: true)).to eq(
+        [package_manager_binary, "ci"]
+      )
     end
   end
 
@@ -222,41 +162,6 @@ RSpec.describe PackageJson::Managers::NpmLike do
       end
     end
 
-    context "when passing the usual options" do
-      it "supports ignore_scripts" do
-        with_package_json_file do
-          result = manager.add(["example"], ignore_scripts: true)
-
-          expect(result).to be(true)
-          expect_manager_to_be_invoked_with("install --save-prod --ignore-scripts example")
-        end
-      end
-
-      it "supports omit_optional_deps" do
-        with_package_json_file do
-          result = manager.add(["example"], omit_optional_deps: true)
-
-          expect(result).to be(true)
-          expect_manager_to_be_invoked_with("install --save-prod --omit=optional example")
-        end
-      end
-
-      it "supports all the options together" do
-        with_package_json_file do
-          result = manager.add(
-            ["example"],
-            ignore_scripts: true,
-            omit_optional_deps: true
-          )
-
-          expect(result).to be(true)
-          expect_manager_to_be_invoked_with(
-            "install --save-prod --ignore-scripts --omit=optional example"
-          )
-        end
-      end
-    end
-
     context "when the current working directory is changed" do
       it "interacts with the right package.json" do
         manager # initialize the package.json in the current directory
@@ -313,39 +218,6 @@ RSpec.describe PackageJson::Managers::NpmLike do
         File.write("package.json", "{},")
 
         expect(manager.remove(["example"])).to be(false)
-      end
-    end
-
-    context "when passing the usual options" do
-      it "supports ignore_scripts" do
-        with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
-          result = manager.remove(["example"], ignore_scripts: true)
-
-          expect(result).to be(true)
-          expect_manager_to_be_invoked_with("remove --ignore-scripts example")
-        end
-      end
-
-      it "supports omit_optional_deps" do
-        with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
-          result = manager.remove(["example"], omit_optional_deps: true)
-
-          expect(result).to be(true)
-          expect_manager_to_be_invoked_with("remove --omit=optional example")
-        end
-      end
-
-      it "supports all the options together" do
-        with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
-          result = manager.remove(
-            ["example"],
-            ignore_scripts: true,
-            omit_optional_deps: true
-          )
-
-          expect(result).to be(true)
-          expect_manager_to_be_invoked_with("remove --ignore-scripts --omit=optional example")
-        end
       end
     end
 
