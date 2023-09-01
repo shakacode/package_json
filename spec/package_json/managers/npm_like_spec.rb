@@ -6,7 +6,7 @@ RSpec.describe PackageJson::Managers::NpmLike do
   subject(:manager) { described_class.new(package_json) }
 
   let(:package_manager_binary) { "npm" }
-  let(:package_json) { instance_double(PackageJson, path: Dir.pwd) }
+  let(:package_json) { instance_double(PackageJson, directory: Dir.pwd) }
 
   around { |example| within_temp_directory { example.run } }
 

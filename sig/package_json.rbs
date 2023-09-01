@@ -8,7 +8,7 @@ class PackageJson
   end
 
   attr_reader manager: Managers::Base
-  attr_reader path: String
+  attr_reader directory: String
 
   def self.fetch_default_fallback_manager: () -> Symbol
 
@@ -22,7 +22,7 @@ class PackageJson
 
   private
 
-  @path: String
+  @directory: String
 
   def package_json_path: () -> String
 

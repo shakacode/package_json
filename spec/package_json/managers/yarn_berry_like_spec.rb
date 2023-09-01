@@ -6,7 +6,7 @@ RSpec.describe PackageJson::Managers::YarnBerryLike do
   subject(:manager) { described_class.new(package_json) }
 
   let(:package_manager_binary) { "yarn" }
-  let(:package_json) { instance_double(PackageJson, path: Dir.pwd) }
+  let(:package_json) { instance_double(PackageJson, directory: Dir.pwd) }
 
   # rubocop:disable RSpec/BeforeAfterAll
   before(:all) { setup_yarn_berry_project_template }

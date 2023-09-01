@@ -13,7 +13,7 @@ class PackageJson
 
   class NotImplementedError < Error; end
 
-  attr_reader :manager, :path
+  attr_reader :manager, :directory
 
   def self.fetch_default_fallback_manager
     ENV.fetch("PACKAGE_JSON_FALLBACK_MANAGER", "npm").to_sym
@@ -28,7 +28,7 @@ class PackageJson
   end
 
   def initialize(path_to_directory = Dir.pwd, fallback_manager: PackageJson.fetch_default_fallback_manager)
-    @path = File.absolute_path(path_to_directory)
+    @directory = File.absolute_path(path_to_directory)
 
     existed = ensure_package_json_exists
 
@@ -104,7 +104,7 @@ class PackageJson
   private
 
   def package_json_path
-    "#{path}/package.json"
+    "#{directory}/package.json"
   end
 
   def ensure_package_json_exists

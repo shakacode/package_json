@@ -162,7 +162,7 @@ class PackageJson
       end
 
       def raw(sub_cmd, args)
-        Kernel.system(*build_full_cmd(sub_cmd, args), chdir: @package_json.path)
+        Kernel.system(*build_full_cmd(sub_cmd, args), chdir: @package_json.directory)
       end
     end
   end

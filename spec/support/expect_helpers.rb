@@ -70,6 +70,6 @@ def expect_manager_to_be_invoked_with(args)
     package_manager_binary,
     # this is technically unsafe if an arg value has spaces in it, but we're not expecting that in tests
     *args.split,
-    hash_including({ chdir: package_json.path })
+    hash_including({ chdir: package_json.directory })
   )
 end
