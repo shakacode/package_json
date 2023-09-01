@@ -24,6 +24,10 @@ class PackageJson
 
   @directory: String
 
+  def determine_package_manager: (Symbol fallback_manager) -> Symbol
+
+  def new_package_manager: (Symbol package_manager_name) -> Managers::Base
+
   def package_json_path: () -> String
 
   def ensure_package_json_exists: ((:npm | :yarn_berry | :yarn_classic | :pnpm) package_manager) -> void

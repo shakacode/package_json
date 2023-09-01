@@ -38,38 +38,6 @@ class PackageJson
     record_package_manager! unless existed
   end
 
-  def determine_package_manager(fallback_manager)
-    package_manager = fetch("packageManager", nil)
-
-    return fallback_manager if package_manager.nil?
-
-    name, version = package_manager.split("@")
-
-    if name == "yarn"
-      raise Error, "a major version must be present for Yarn" if version.nil? || version.empty?
-      return :yarn_classic if version.start_with?("1")
-
-      return :yarn_berry
-    end
-
-    name.to_sym
-  end
-
-  def new_package_manager(package_manager_name)
-    case package_manager_name
-    when :npm
-      PackageJson::Managers::NpmLike.new(self)
-    when :yarn_berry
-      PackageJson::Managers::YarnBerryLike.new(self)
-    when :yarn_classic
-      PackageJson::Managers::YarnClassicLike.new(self)
-    when :pnpm
-      PackageJson::Managers::PnpmLike.new(self)
-    else
-      raise Error, "unsupported package manager \"#{package_manager_name}\""
-    end
-  end
-
   def fetch(key, default = (no_default_set_by_user = true; nil))
     contents = read_package_json
 
@@ -102,6 +70,38 @@ class PackageJson
   end
 
   private
+
+  def determine_package_manager(fallback_manager)
+    package_manager = fetch("packageManager", nil)
+
+    return fallback_manager if package_manager.nil?
+
+    name, version = package_manager.split("@")
+
+    if name == "yarn"
+      raise Error, "a major version must be present for Yarn" if version.nil? || version.empty?
+      return :yarn_classic if version.start_with?("1")
+
+      return :yarn_berry
+    end
+
+    name.to_sym
+  end
+
+  def new_package_manager(package_manager_name)
+    case package_manager_name
+    when :npm
+      PackageJson::Managers::NpmLike.new(self)
+    when :yarn_berry
+      PackageJson::Managers::YarnBerryLike.new(self)
+    when :yarn_classic
+      PackageJson::Managers::YarnClassicLike.new(self)
+    when :pnpm
+      PackageJson::Managers::PnpmLike.new(self)
+    else
+      raise Error, "unsupported package manager \"#{package_manager_name}\""
+    end
+  end
 
   def package_json_path
     "#{directory}/package.json"
