@@ -104,7 +104,7 @@ class PackageJson
         require "open3"
 
         command = build_full_cmd("bin", []).join(" ")
-        stdout, stderr, status = Open3.capture3(command)
+        stdout, stderr, status = Open3.capture3(command, chdir: @package_json.path)
 
         unless status.success?
           raise PackageJson::Error, "#{command} failed with exit code #{status.exitstatus}: #{stderr}"
