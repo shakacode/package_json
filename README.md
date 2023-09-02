@@ -69,7 +69,11 @@ which will raise an error instead of implicitly creating the file if it doesn't
 exist.
 
 A `PackageJson` also comes with a `manager` that can be used to manage
-dependencies and run scripts. The manager will be inferred by the
+dependencies and run scripts.
+
+### Specifying a package manager
+
+You can specify which package manager should be used with the
 [`packageManager`](https://nodejs.org/api/packages.html#packagemanager) property
 in the `package.json`.
 
@@ -83,16 +87,15 @@ in the `package.json`.
 > `package.json`, and it is up to the developer to ensure that results in the
 > desired package manager actually running.
 
-You can specify a fallback package manager to use in-case the `package.json`
-does not exist or does not have the `packageManager` property:
+If the `packageManager` property is not present, then the fallback manager will
+be used; this defaults to the value of the `PACKAGE_JSON_FALLBACK_MANAGER`
+environment variable or otherwise `npm`. You can also provide a specific
+fallback manager:
 
 ```ruby
+PackageJson.read(fallback_manager: :pnpm)
 PackageJson.new(fallback_manager: :yarn_classic)
 ```
-
-If a fallback manager is not defined, then the value of the env variable
-`PACKAGE_JSON_FALLBACK_MANAGER` will be used if set, or otherwise falling back
-to `npm`.
 
 Supported package managers are `:npm`, `:yarn_berry`, `:yarn_classic`, and
 `:pnpm`.
@@ -101,12 +104,12 @@ If the `package.json` does not exist, then the `packageManager` property will be
 included based on this value, but it will _not_ be updated if the file already
 exists without the property.
 
-> TODO: providing a class
-
 Managers are provided a reference to the `PackageJson` when they're initialized,
-are run in the same directory as that `PackageJson`, and lets you do a series of
-common actions defined below.
+are run in the same directory as that `PackageJson`.
 
+### Using the package manager
+
+Each package manager supports a set of common methods which are covered below.
 Unless otherwise noted for a particular method, each method:
 
 - Behaves like `system`, returning either `true`, `false`, or `nil` based on if
@@ -114,16 +117,11 @@ Unless otherwise noted for a particular method, each method:
   bang-equivalent if you wish an exception to be thrown instead
 - Does not attempt to capture or intercept the output; using `Kernel.system`
   under the hood, output is sent directly to `stdout` and `stderr`
-- Can be passed any of the options listed for the particular method regardless
-  of what underlying package manager is being used; if an option is not
-  supported by the manager, it will be ignored
-  - Note in the case of Yarn Berry most options have been either removed or
-    moved to the configuration file
 - Will run in the directory of the `package.json`; for methods that generate
   native commands, it is up to the caller to ensure the working directory is
   correct
 
-### Get the version of the package manager
+#### Get the version of the package manager
 
 ```ruby
 package_json.manager.version
@@ -133,7 +131,7 @@ This is suitable for checking that the package manager is actually available
 before performing other operations. Unlike other non-bang methods, this will
 error if the underlying command exits with a non-zero code.
 
-### Installing dependencies
+#### Installing dependencies
 
 ```ruby
 # install all dependencies
@@ -147,7 +145,7 @@ package_json.manager.install(frozen: true)
 | -------- | ---------------------------------------- |
 | `frozen` | Fail if the lockfile needs to be updated |
 
-### Generating the `install` command for native scripts and advanced calls
+#### Generating the `install` command for native scripts and advanced calls
 
 ```ruby
 # returns an array of strings that make up the desired operation
@@ -170,7 +168,7 @@ end
 | -------- | ---------------------------------------- |
 | `frozen` | Fail if the lockfile needs to be updated |
 
-### Adding dependencies
+#### Adding dependencies
 
 ```ruby
 # adds axios as a production dependency
@@ -187,14 +185,14 @@ package_json.manager.add(["dotenv-webpack@^6"])
 | ------ | ------------------------------------------------------------------------------------------- |
 | `type` | The type to add the dependencies as; either `:production` (default), `:dev`, or `:optional` |
 
-### Removing dependencies
+#### Removing dependencies
 
 ```ruby
 # removes the axios package
 package_json.manager.remove(["axios"])
 ```
 
-### Run a script
+#### Run a script
 
 ```ruby
 # runs the "test" script
@@ -211,7 +209,7 @@ package_json.manager.run("lint", ["--fix"], silent: true)
 | -------- | ---------------------------------------- |
 | `silent` | Suppress output from the package manager |
 
-### Generating a `run` command for native scripts and advanced calls
+#### Generating a `run` command for native scripts and advanced calls
 
 ```ruby
 native_run_command = package_json.manager.native_run_command("test", ["--coverage"])
@@ -233,7 +231,7 @@ end
 | -------- | ---------------------------------------- |
 | `silent` | Suppress output from the package manager |
 
-### Generating a `exec` command for native scripts and advanced calls
+#### Generating a `exec` command for native scripts and advanced calls
 
 ```ruby
 native_exec_command = package_json.manager.native_exec_command("webpack", ["serve"])
