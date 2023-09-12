@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "package_json/managers/base"
+require_relative "package_json/managers/bun_like"
 require_relative "package_json/managers/npm_like"
 require_relative "package_json/managers/pnpm_like"
 require_relative "package_json/managers/yarn_berry_like"
@@ -98,6 +99,8 @@ class PackageJson
       PackageJson::Managers::YarnClassicLike.new(self)
     when :pnpm
       PackageJson::Managers::PnpmLike.new(self)
+    when :bun
+      PackageJson::Managers::BunLike.new(self)
     else
       raise Error, "unsupported package manager \"#{package_manager_name}\""
     end

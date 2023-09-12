@@ -174,6 +174,12 @@ RSpec.describe PackageJson do
         expect_package_json_with_content({ "packageManager" => start_with("pnpm@8.") })
       end
 
+      it "sets packageManager correctly when the package manager is bun" do
+        described_class.new(fallback_manager: :bun)
+
+        expect_package_json_with_content({ "packageManager" => start_with("bun@1.") })
+      end
+
       it "raises an error if the fallback manager is not supported" do
         expect { described_class.new(fallback_manager: :unknown) }.to raise_error(
           PackageJson::Error,
