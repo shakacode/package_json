@@ -1,6 +1,7 @@
 require "json"
 
 PACKAGE_MANAGER_MAP = {
+  "bun" => "1",
   "npm" => "9",
   "yarn" => "1",
   "pnpm" => "8"

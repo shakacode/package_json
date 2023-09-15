@@ -97,8 +97,8 @@ PackageJson.read(fallback_manager: :pnpm)
 PackageJson.new(fallback_manager: :yarn_classic)
 ```
 
-Supported package managers are `:npm`, `:yarn_berry`, `:yarn_classic`, and
-`:pnpm`.
+Supported package managers are `:npm`, `:yarn_berry`, `:yarn_classic`, `:pnpm`,
+and `:bun`.
 
 If the `package.json` does not exist, then the `packageManager` property will be
 included based on this value, but it will _not_ be updated if the file already

@@ -6,6 +6,12 @@ SimpleCov.start do
   use_merging true
   enable_coverage :branch
   minimum_coverage line: 100, branch: 100
+
+  # bun does not support Windows yet, so not all tests will run properly
+  if Gem.win_platform?
+    add_filter "spec/package_json/managers/bun_like_spec.rb"
+    add_filter "lib/package_json/managers/bun_like.rb"
+  end
 end
 
 require "package_json"
@@ -15,6 +21,17 @@ require "./spec/support/yarn_berry_helpers"
 require "./spec/support/expect_helpers"
 require "./spec/support/status_struct"
 require "./spec/support/temp_helpers"
+
+def skip_on_windows(pend: false)
+  # :nocov:
+  return unless Gem.win_platform?
+
+  skip "Not supported on Windows" unless pend
+
+  pending "Not supported on Windows"
+
+  # :nocov:
+end
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
