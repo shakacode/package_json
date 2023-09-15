@@ -14,12 +14,16 @@ RSpec.describe PackageJson::Managers::BunLike do
     before { allow_open3_to_receive_capture3_for_package_manager }
 
     it "returns the version" do
+      skip_on_windows
+
       expect(manager.version).to start_with("1.")
     end
   end
 
   describe "#install" do
     it "runs and returns true" do
+      skip_on_windows
+
       with_package_json_file do
         result = manager.install
 
@@ -51,6 +55,8 @@ RSpec.describe PackageJson::Managers::BunLike do
 
     context "when the current working directory is changed" do
       it "interacts with the right package.json" do
+        skip_on_windows
+
         with_package_json_file do
           manager # initialize the package.json in the current directory
 
@@ -66,6 +72,8 @@ RSpec.describe PackageJson::Managers::BunLike do
 
   describe "#install!" do
     it "runs and returns nil" do
+      skip_on_windows
+
       with_package_json_file do
         expect(manager.install!).to be_nil
       end
@@ -96,6 +104,8 @@ RSpec.describe PackageJson::Managers::BunLike do
 
   describe "#add" do
     it "adds dependencies as production by default" do
+      skip_on_windows
+
       with_package_json_file do
         result = manager.add(["example"])
 
@@ -110,6 +120,8 @@ RSpec.describe PackageJson::Managers::BunLike do
     end
 
     it "supports adding production dependencies" do
+      skip_on_windows
+
       with_package_json_file do
         result = manager.add(["example"], type: :production)
 
@@ -124,6 +136,8 @@ RSpec.describe PackageJson::Managers::BunLike do
     end
 
     it "supports adding dev dependencies" do
+      skip_on_windows
+
       with_package_json_file do
         result = manager.add(["example"], type: :dev)
 
@@ -138,6 +152,8 @@ RSpec.describe PackageJson::Managers::BunLike do
     end
 
     it "supports adding optional dependencies" do
+      skip_on_windows
+
       with_package_json_file do
         result = manager.add(["example"], type: :optional)
 
@@ -165,6 +181,8 @@ RSpec.describe PackageJson::Managers::BunLike do
 
     context "when the current working directory is changed" do
       it "interacts with the right package.json" do
+        skip_on_windows
+
         manager # initialize the package.json in the current directory
 
         within_subdirectory("subdir") do
@@ -178,6 +196,8 @@ RSpec.describe PackageJson::Managers::BunLike do
 
   describe "#add!" do
     it "returns nil" do
+      skip_on_windows
+
       with_package_json_file do
         expect(manager.add!(["example"])).to be_nil
       end
@@ -192,6 +212,8 @@ RSpec.describe PackageJson::Managers::BunLike do
 
   describe "#remove" do
     it "removes the package and returns true" do
+      skip_on_windows
+
       with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
         result = manager.remove(["example"])
 
@@ -222,6 +244,8 @@ RSpec.describe PackageJson::Managers::BunLike do
 
     context "when the current working directory is changed" do
       it "interacts with the right package.json" do
+        skip_on_windows
+
         with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
           manager # initialize the package.json in the current directory
 
@@ -243,6 +267,8 @@ RSpec.describe PackageJson::Managers::BunLike do
 
   describe "#remove!" do
     it "returns nil" do
+      skip_on_windows
+
       with_package_json_file({ "dependencies" => { "example" => "^0.0.0", "example2" => "^0.0.0" } }) do
         result = manager.remove!(["example"])
 
@@ -279,6 +305,8 @@ RSpec.describe PackageJson::Managers::BunLike do
     end
 
     it "runs the script" do
+      skip_on_windows
+
       with_package_json_file({ "scripts" => { "rspec-test-helper" => "ruby helper.rb" } }) do
         result = manager.run("rspec-test-helper")
 
@@ -289,6 +317,8 @@ RSpec.describe PackageJson::Managers::BunLike do
     end
 
     it "passes args correctly" do
+      skip_on_windows
+
       with_package_json_file({ "scripts" => { "rspec-test-helper" => "ruby helper.rb" } }) do
         result = manager.run("rspec-test-helper", ["--silent", "--flag", "value"])
 
@@ -320,6 +350,8 @@ RSpec.describe PackageJson::Managers::BunLike do
     end
 
     it "supports the silent option" do
+      skip_on_windows
+
       with_package_json_file({ "scripts" => { "rspec-test-helper" => "ruby helper.rb" } }) do
         result = manager.run("rspec-test-helper", silent: true)
 
@@ -330,6 +362,8 @@ RSpec.describe PackageJson::Managers::BunLike do
     end
 
     it "supports the silent option with args" do
+      skip_on_windows
+
       with_package_json_file({ "scripts" => { "rspec-test-helper" => "ruby helper.rb" } }) do
         result = manager.run("rspec-test-helper", ["--silent", "value", "--flag"], silent: true)
 
@@ -341,6 +375,8 @@ RSpec.describe PackageJson::Managers::BunLike do
 
     context "when the current working directory is changed" do
       it "interacts with the right package.json" do
+        skip_on_windows
+
         with_package_json_file({ "scripts" => { "rspec-test-helper" => "ruby helper.rb" } }) do
           manager # initialize the package.json in the current directory
 
@@ -363,6 +399,8 @@ RSpec.describe PackageJson::Managers::BunLike do
     end
 
     it "returns nil" do
+      skip_on_windows
+
       with_package_json_file({ "scripts" => { "rspec-test-helper" => "ruby helper.rb" } }) do
         result = manager.run!("rspec-test-helper")
 
