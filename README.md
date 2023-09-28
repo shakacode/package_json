@@ -34,7 +34,7 @@ executing:
 package_json = PackageJson.new
 
 # adds eslint, eslint-plugin-prettier, and prettier as development dependencies
-package_json.manager.add(%w[eslint prettier], :dev)
+package_json.manager.add(%w[eslint prettier], type: :dev)
 
 # adds the "lint" and "format" scripts, preserving any existing scripts
 package_json.merge! do |pj|
