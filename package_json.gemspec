@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = %w[open-source@ackama.com]
 
   spec.summary = "The missing gem for managing package.json files in Ruby"
-  spec.homepage = "https://github.com/G-Rath/package_json"
+  spec.homepage = "https://github.com/shakacode/package_json"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
 
