@@ -79,14 +79,17 @@ class PackageJson
 
     name, version = package_manager.split("@")
 
-    if name == "yarn"
-      raise Error, "a major version must be present for Yarn" if version.nil? || version.empty?
-      return :yarn_classic if version.start_with?("1")
-
-      return :yarn_berry
-    end
+    return determin_yarn_version(version) if name == "yarn"
 
     name.to_sym
+  end
+
+  def determin_yarn_version(version)
+    raise Error, "a major version must be present for Yarn" if version.nil? || version.empty?
+
+    return :yarn_classic if version.start_with? "1."
+
+    :yarn_berry
   end
 
   def new_package_manager(package_manager_name)
