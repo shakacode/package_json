@@ -528,11 +528,15 @@ RSpec.describe PackageJson do
     let(:package_json) { described_class.new }
 
     it "raises error if no version is given" do
-      expect { package_json.send(:determin_yarn_version, nil) }.to raise_error("a major version must be present for Yarn")
+      expect do
+        package_json.send(:determin_yarn_version, nil)
+      end.to raise_error("a major version must be present for Yarn")
     end
 
     it "raises error if blank version is given" do
-      expect { package_json.send(:determin_yarn_version, "") }.to raise_error("a major version must be present for Yarn")
+      expect do
+        package_json.send(:determin_yarn_version, "")
+      end.to raise_error("a major version must be present for Yarn")
     end
 
     it "returns yarn classic for version 1" do
