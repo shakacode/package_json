@@ -87,7 +87,11 @@ class PackageJson
   def determin_yarn_version(version)
     raise Error, "a major version must be present for Yarn" if version.nil? || version.empty?
 
-    return :yarn_classic if version.match?(/^[~^]?1(\..{,20})?$/)
+    # Regex for matching version 1 with ~ or ^ prefix and optionally minor and path version
+    # This regext doesn't check the validity of the version format!
+    version_1_regex = /^[~^]?1(\..{,20})?$/
+
+    return :yarn_classic if version.match? version_1_regex
 
     :yarn_berry
   end
