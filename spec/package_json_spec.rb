@@ -63,7 +63,7 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "supports yarn classic with version 1" do
+      it "supports yarn classic with just a major version" do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@1" }) do
           package_json = described_class.read
 
@@ -71,7 +71,7 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "supports yarn classic with version ^1.2" do
+      it "supports yarn classic with a caret constraint" do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@^1.2" }) do
           package_json = described_class.read
 
@@ -79,7 +79,7 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "supports yarn classic with version ~1.2" do
+      it "supports yarn classic with tilde constraint" do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@~1.2" }) do
           package_json = described_class.read
 
