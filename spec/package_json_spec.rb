@@ -87,6 +87,14 @@ RSpec.describe PackageJson do
         end
       end
 
+      it "supports yarn classic with exact version" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@=1.2" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
       it "doesn't return yarn classic if the major version is 11" do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@11.2.3" }) do
           package_json = described_class.read
