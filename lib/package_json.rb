@@ -89,7 +89,7 @@ class PackageJson
 
     # check to see if we're meant to be using Yarn v1 based on the versions major component,
     # and accounting for the presents of version constraints like ^, ~, and =
-    return :yarn_classic if version.match? /^[^~=]?1(\.|$)/
+    return :yarn_classic if version.match?(/^[~=^]?1(\.|$)/)
 
     :yarn_berry
   end
