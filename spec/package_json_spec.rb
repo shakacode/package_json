@@ -55,7 +55,7 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "supports yarn classic" do
+      it "supports yarn classic with version 1.2.3" do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@1.2.3" }) do
           package_json = described_class.read
 
@@ -63,7 +63,39 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "supports yarn berry" do
+      it "supports yarn classic with version 1" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@1" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "supports yarn classic with version ^1.2" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@^1.2" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "supports yarn classic with version ~1.2" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@~1.2" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "doesn't return yarn classic if the major version is 11" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@11.2.3" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).not_to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "supports yarn berry with version 2.3.2" do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@2.3.2" }) do
           package_json = described_class.read
 
@@ -71,8 +103,8 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "returns yarn berry if the major version is 11" do
-        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@11.2.3" }) do
+      it "returns yarn berry if the major version is ~11.2.3" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@~11.2.3" }) do
           package_json = described_class.read
 
           expect(package_json.manager).to be_a PackageJson::Managers::YarnBerryLike
@@ -521,57 +553,6 @@ RSpec.describe PackageJson do
           expect_package_json_with_content({ "packageManager" => start_with("npm@9.") })
         end
       end
-    end
-  end
-
-  describe "the private method #determin_yarn_version" do
-    let(:package_json) { described_class.new }
-
-    it "raises error if no version is given" do
-      expect do
-        package_json.send(:determin_yarn_version, nil)
-      end.to raise_error("a major version must be present for Yarn")
-    end
-
-    it "raises error if blank version is given" do
-      expect do
-        package_json.send(:determin_yarn_version, "")
-      end.to raise_error("a major version must be present for Yarn")
-    end
-
-    it "returns yarn classic for version 1" do
-      determined_version = package_json.send(:determin_yarn_version, "1")
-      expect(determined_version).to be :yarn_classic
-    end
-
-    it "returns yarn classic for version 1.2" do
-      determined_version = package_json.send(:determin_yarn_version, "1.2")
-      expect(determined_version).to be :yarn_classic
-    end
-
-    it "returns yarn classic for version ^1.x" do
-      determined_version = package_json.send(:determin_yarn_version, "^1.x")
-      expect(determined_version).to be :yarn_classic
-    end
-
-    it "returns yarn classic for version ~1.2" do
-      determined_version = package_json.send(:determin_yarn_version, "~1.2")
-      expect(determined_version).to be :yarn_classic
-    end
-
-    it "returns yarn berry for version 11" do
-      determined_version = package_json.send(:determin_yarn_version, "11")
-      expect(determined_version).to be :yarn_berry
-    end
-
-    it "returns yarn berry for version ~11.x" do
-      determined_version = package_json.send(:determin_yarn_version, "~11.x")
-      expect(determined_version).to be :yarn_berry
-    end
-
-    it "returns yarn berry for version 2" do
-      determined_version = package_json.send(:determin_yarn_version, "2")
-      expect(determined_version).to be :yarn_berry
     end
   end
 end
