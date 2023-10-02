@@ -89,7 +89,7 @@ class PackageJson
 
     # Regex for matching version 1 with ~ or ^ prefix and optionally minor and path version
     # This regext doesn't check the validity of the version format!
-    version_1_regex = /^[~^]?1(\..{,20})?$/
+    version_1_regex = /^[~^]?1(\.|$)/
 
     return :yarn_classic if version.match? version_1_regex
 
