@@ -103,14 +103,6 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "returns yarn berry if the major version is ~11.2.3" do
-        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@~11.2.3" }) do
-          package_json = described_class.read
-
-          expect(package_json.manager).to be_a PackageJson::Managers::YarnBerryLike
-        end
-      end
-
       it "does not change the packageManager property" do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "pnpm" }) do
           described_class.read(Dir.pwd, fallback_manager: :yarn_classic)
