@@ -95,7 +95,7 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "doesn't return yarn classic if the major version is 11" do
+      it "does not return yarn classic if the major version is 11" do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@11.2.3" }) do
           package_json = described_class.read
 
