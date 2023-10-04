@@ -55,7 +55,7 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "supports yarn classic" do
+      it "supports yarn classic with version 1.2.3" do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@1.2.3" }) do
           package_json = described_class.read
 
@@ -63,7 +63,47 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "supports yarn berry" do
+      it "supports yarn classic with just a major version" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@1" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "supports yarn classic with a caret constraint" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@^1.2" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "supports yarn classic with tilde constraint" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@~1.2" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "supports yarn classic with exact version" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@=1.2" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "does not return yarn classic if the major version is 11" do
+        with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@11.2.3" }) do
+          package_json = described_class.read
+
+          expect(package_json.manager).not_to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "supports yarn berry with version 2.3.2" do
         with_package_json_file({ "version" => "1.0.0", "packageManager" => "yarn@2.3.2" }) do
           package_json = described_class.read
 
