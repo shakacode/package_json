@@ -9,13 +9,13 @@ Gem::Specification.new do |spec|
   spec.email = %w[open-source@ackama.com]
 
   spec.summary = "The missing gem for managing package.json files in Ruby"
-  spec.homepage = "https://github.com/G-Rath/package_json"
+  spec.homepage = "https://github.com/shakacode/package_json"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
-  spec.metadata["changelog_uri"] = spec.homepage
+  spec.metadata["changelog_uri"] = "#{spec.homepage}/blob/main/CHANGELOG.md"
 
   # TODO: we expect to have to disable this if we switch to automatic releases
   #   but until then we've got it enabled to make Rubocop happy
