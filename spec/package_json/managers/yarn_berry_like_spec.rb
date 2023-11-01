@@ -17,7 +17,7 @@ RSpec.describe PackageJson::Managers::YarnBerryLike do
 
   describe "#version" do
     it "returns the version" do
-      expect(manager.version).to start_with("3.")
+      expect(manager.version).to start_with("4.")
     end
   end
 
