@@ -79,12 +79,12 @@ class PackageJson
 
     name, version = package_manager.split("@")
 
-    return determin_yarn_version(version) if name == "yarn"
+    return determine_yarn_version(version) if name == "yarn"
 
     name.to_sym
   end
 
-  def determin_yarn_version(version)
+  def determine_yarn_version(version)
     raise Error, "a major version must be present for Yarn" if version.nil? || version.empty?
 
     # check to see if we're meant to be using Yarn v1 based on the versions major component,
