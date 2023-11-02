@@ -8,7 +8,8 @@ def write_yarn_berry_lock
       # Manual changes might be lost - proceed with caution!
 
       __metadata:
-        version: 6
+        version: 8
+        cacheKey: 10c0
 
       "root-workspace-0b6124@workspace:.":
         version: 0.0.0-use.local

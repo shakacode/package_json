@@ -198,7 +198,7 @@ RSpec.describe PackageJson do
           File.unlink("package.json")
           described_class.new(fallback_manager: :yarn_berry)
 
-          expect_package_json_with_content({ "packageManager" => start_with("yarn@3.") })
+          expect_package_json_with_content({ "packageManager" => start_with("yarn@4.") })
         end
       end
 
