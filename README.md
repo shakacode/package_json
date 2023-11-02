@@ -267,10 +267,10 @@ git commits and the created tag, and push the `.gem` file to
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
-https://github.com/[USERNAME]/package_json. This project is intended to be a
+https://github.com/shakacode/package_json. This project is intended to be a
 safe, welcoming space for collaboration, and contributors are expected to adhere
 to the
-[code of conduct](https://github.com/[USERNAME]/package_json/blob/main/CODE_OF_CONDUCT.md).
+[code of conduct](https://github.com/shakacode/package_json/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -281,4 +281,4 @@ The gem is available as open source under the terms of the
 
 Everyone interacting in the PackageJson project's codebases, issue trackers,
 chat rooms and mailing lists is expected to follow the
-[code of conduct](https://github.com/[USERNAME]/package_json/blob/main/CODE_OF_CONDUCT.md).
+[code of conduct](https://github.com/shakacode/package_json/blob/main/CODE_OF_CONDUCT.md).
