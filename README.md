@@ -74,7 +74,7 @@ in the `package.json`.
 > **Note**
 >
 > Only the name of the package manager is used; the version (if present) is
-> _not_ checked, nor is [`codepack`](https://nodejs.org/api/corepack.html) used
+> _not_ checked, nor is [`corepack`](https://nodejs.org/api/corepack.html) used
 > to ensure that the package manager is installed.
 >
 > The manager will be invoked by its name in the directory of the
