@@ -215,13 +215,9 @@ RSpec.describe PackageJson do
       end
 
       it "sets packageManager correctly when the package manager is bun" do
-        skip_on_windows(pend: true)
-
         described_class.new(fallback_manager: :bun)
 
-        # :nocov:
         expect_package_json_with_content({ "packageManager" => start_with("bun@1.") })
-        # :nocov:
       end
 
       it "raises an error if the fallback manager is not supported" do
