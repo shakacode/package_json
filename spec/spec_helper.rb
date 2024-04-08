@@ -22,7 +22,7 @@ require "./spec/support/expect_helpers"
 require "./spec/support/status_struct"
 require "./spec/support/temp_helpers"
 
-def skip_on_windows(pend: false)
+def skip_on_windows(pend: true)
   # :nocov:
   return unless Gem.win_platform?
 
