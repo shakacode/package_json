@@ -22,17 +22,6 @@ require "./spec/support/expect_helpers"
 require "./spec/support/status_struct"
 require "./spec/support/temp_helpers"
 
-def skip_on_windows(pend: true)
-  # :nocov:
-  return unless Gem.win_platform?
-
-  skip "Not supported on Windows" unless pend
-
-  pending "Not supported on Windows"
-
-  # :nocov:
-end
-
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
