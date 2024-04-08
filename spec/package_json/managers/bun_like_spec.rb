@@ -34,8 +34,6 @@ RSpec.describe PackageJson::Managers::BunLike do
 
     it "supports frozen" do
       with_package_json_file do
-        pending "bun currently does not support an empty lockfile - https://github.com/oven-sh/bun/issues/5162"
-
         result = manager.install(frozen: true)
 
         expect_manager_to_be_invoked_with("install --frozen-lockfile")
