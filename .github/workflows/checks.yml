@@ -25,11 +25,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v6
 
       - run: npx prettier --check .
   test:
@@ -41,7 +41,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
@@ -52,7 +52,7 @@ jobs:
           bundler-cache: true
       - run: bundle exec rspec
       - name: Archive spec outputs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         if: success() || failure()
         with:
           name: rspec-output-coverage-${{ matrix.os }}-${{ matrix.ruby }}
@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
