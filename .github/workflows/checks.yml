@@ -52,7 +52,7 @@ jobs:
           bundler-cache: true
       - run: bundle exec rspec
       - name: Archive spec outputs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         if: success() || failure()
         with:
           name: rspec-output-coverage-${{ matrix.os }}-${{ matrix.ruby }}
