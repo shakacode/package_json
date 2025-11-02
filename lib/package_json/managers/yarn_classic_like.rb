@@ -62,7 +62,8 @@ class PackageJson
           raise PackageJson::Error, "#{command} failed with exit code #{status.exitstatus}: #{stderr}"
         end
 
-        stdout.chomp
+        # Strip ANSI/CSI escape sequences that may be present when invoked via tools like concurrently
+        stdout.chomp.gsub(/\e\[[^\x40-\x7E]*[\x40-\x7E]/, "")
       end
 
       def build_run_args(script_name, args, silent:)

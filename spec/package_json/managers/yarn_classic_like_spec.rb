@@ -451,5 +451,23 @@ RSpec.describe PackageJson::Managers::YarnClassicLike do
         )
       end
     end
+
+    context "when yarn bin output contains CSI sequences" do
+      before do
+        # Simulate output from concurrently which includes ANSI escape sequences
+        bin_path_with_csi = "\e[2K\e[1G#{bin_path}\n"
+        allow(Open3).to receive(:capture3).and_return([bin_path_with_csi, "", Struct::Status.new(0)])
+      end
+
+      it "strips CSI sequences from the path" do
+        expect(manager.native_exec_command("webpack")).to eq(["#{bin_path}/webpack"])
+      end
+
+      it "strips CSI sequences from the path with args" do
+        expect(manager.native_exec_command("webpack", ["--flag", "value"])).to eq([
+          "#{bin_path}/webpack", "--flag", "value"
+        ])
+      end
+    end
   end
 end
