@@ -40,11 +40,17 @@ class PackageJson
       end
 
       # Adds the given packages
+      # @param packages [Array<String>] the packages to add
+      # @param type [Symbol] the type of dependency (:production, :dev, :optional)
+      # @param exact [Boolean] if true, saves packages with exact versions (no ^ or ~ prefix)
       def add(packages, type: :production, exact: false)
         raise NotImplementedError
       end
 
       # Adds the given packages
+      # @param packages [Array<String>] the packages to add
+      # @param type [Symbol] the type of dependency (:production, :dev, :optional)
+      # @param exact [Boolean] if true, saves packages with exact versions (no ^ or ~ prefix)
       def add!(packages, type: :production, exact: false)
         raise_exited_with_non_zero_code_error unless add(packages, type: type, exact: exact)
       end
