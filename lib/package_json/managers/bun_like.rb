@@ -16,8 +16,9 @@ class PackageJson
       end
 
       # Adds the given packages
-      def add(packages, type: :production)
-        raw("add", [package_type_install_flag(type)].compact + packages)
+      def add(packages, type: :production, exact: false)
+        flags = [package_type_install_flag(type), exact_flag(exact)].compact
+        raw("add", flags + packages)
       end
 
       # Removes the given packages
@@ -60,6 +61,12 @@ class PackageJson
         return ["--frozen-lockfile"] if frozen
 
         []
+      end
+
+      def exact_flag(exact)
+        return "--exact" if exact
+
+        nil
       end
 
       def package_type_install_flag(type)

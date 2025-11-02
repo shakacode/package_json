@@ -40,13 +40,13 @@ class PackageJson
       end
 
       # Adds the given packages
-      def add(packages, type: :production)
+      def add(packages, type: :production, exact: false)
         raise NotImplementedError
       end
 
       # Adds the given packages
-      def add!(packages, type: :production)
-        raise_exited_with_non_zero_code_error unless add(packages, type: type)
+      def add!(packages, type: :production, exact: false)
+        raise_exited_with_non_zero_code_error unless add(packages, type: type, exact: exact)
       end
 
       # Removes the given packages

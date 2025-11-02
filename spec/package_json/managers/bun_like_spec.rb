@@ -149,6 +149,34 @@ RSpec.describe PackageJson::Managers::BunLike do
       end
     end
 
+    it "supports adding dependencies with exact version" do
+      with_package_json_file do
+        result = manager.add(["example"], exact: true)
+
+        expect(result).to be(true)
+        expect_manager_to_be_invoked_with("add --exact example")
+        expect_package_json_with_content({
+          "dependencies" => {
+            "example" => "0.0.0"
+          }
+        })
+      end
+    end
+
+    it "supports adding dev dependencies with exact version" do
+      with_package_json_file do
+        result = manager.add(["example"], type: :dev, exact: true)
+
+        expect(result).to be(true)
+        expect_manager_to_be_invoked_with("add --dev --exact example")
+        expect_package_json_with_content({
+          "devDependencies" => {
+            "example" => "0.0.0"
+          }
+        })
+      end
+    end
+
     context "when the group type is not supported" do
       it "raises an error" do
         expect { manager.add([], type: :unknown) }.to raise_error(PackageJson::Error)

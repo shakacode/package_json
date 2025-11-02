@@ -16,8 +16,9 @@ class PackageJson
       end
 
       # Adds the given packages
-      def add(packages, type: :production)
-        raw("add", [package_type_install_flag(type)].compact + packages)
+      def add(packages, type: :production, exact: false)
+        flags = [package_type_install_flag(type), exact_flag(exact)].compact
+        raw("add", flags + packages)
       end
 
       # Removes the given packages
@@ -62,6 +63,12 @@ class PackageJson
         # we make frozen lockfile behaviour consistent with the other package managers as
         # yarn berry automatically enables frozen lockfile if it detects it's running in CI
         ["--no-immutable"]
+      end
+
+      def exact_flag(exact)
+        return "--exact" if exact
+
+        nil
       end
 
       def package_type_install_flag(type)
