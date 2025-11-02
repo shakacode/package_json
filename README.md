@@ -1,5 +1,9 @@
 # PackageJson
 
+[![License](https://img.shields.io/badge/license-mit-green.svg)](LICENSE.md)
+[![Gem Version](https://badge.fury.io/rb/package_json.svg)](https://badge.fury.io/rb/package_json)
+[![Ruby](https://github.com/shakacode/package_json/actions/workflows/checks.yml/badge.svg)](https://github.com/shakacode/package_json/actions/workflows/checks.yml)
+
 The missing gem for managing `package.json` files, without having to know about
 package managers (mostly).
 
