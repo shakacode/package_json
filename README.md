@@ -275,6 +275,7 @@ bin/setup-git-hooks
 ```
 
 This will install a pre-commit hook that:
+
 - Runs RuboCop on staged Ruby files
 - Runs all RSpec tests
 
