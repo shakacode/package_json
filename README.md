@@ -266,6 +266,20 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run
 `rake spec` to run the tests. You can also run `bin/console` for an interactive
 prompt that will allow you to experiment.
 
+### Git Hooks
+
+To set up the pre-commit hook that prevents simple test and lint failures:
+
+```bash
+bin/setup-git-hooks
+```
+
+This will install a pre-commit hook that:
+- Runs RuboCop on staged Ruby files
+- Runs all RSpec tests
+
+To bypass the hook (not recommended), use `git commit --no-verify`.
+
 To install this gem onto your local machine, run `bundle exec rake install`. To
 release a new version, update the version number in `version.rb`, and then tag
 the commit with the version prefixed with a `v`, which will trigger the release
