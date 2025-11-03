@@ -1,11 +1,12 @@
 # Update Changelog
 
-You are helping to add an entry to the CHANGELOG.md file for the PackageJson project.
+You are helping to add an entry to the CHANGELOG.md file for the PackageJson
+project.
 
 ## Critical Requirements
 
-1. **User-visible changes only**: Only add changelog entries for user-visible changes:
-
+1. **User-visible changes only**: Only add changelog entries for user-visible
+   changes:
    - New features
    - Bug fixes
    - Breaking changes
@@ -29,7 +30,10 @@ You are helping to add an entry to the CHANGELOG.md file for the PackageJson pro
 Each changelog entry MUST follow this exact format:
 
 ```markdown
-- **Bold description of change**. [PR 1818](https://github.com/shakacode/package_json/pull/1818) by [username](https://github.com/username). Optional additional context or details.
+- **Bold description of change**.
+  [PR 1818](https://github.com/shakacode/package_json/pull/1818) by
+  [username](https://github.com/username). Optional additional context or
+  details.
 ```
 
 **Important formatting rules**:
@@ -37,17 +41,22 @@ Each changelog entry MUST follow this exact format:
 - Start with a dash and space: `- `
 - Use **bold** for the main description
 - End the bold description with a period before the link
-- Always link to the PR: `[PR 1818](https://github.com/shakacode/package_json/pull/1818)` - **NO hash symbol**
+- Always link to the PR:
+  `[PR 1818](https://github.com/shakacode/package_json/pull/1818)` - **NO hash
+  symbol**
 - Always link to the author: `by [username](https://github.com/username)`
 - End with a period after the author link
-- Additional details can be added after the main entry, using proper indentation for multi-line entries
+- Additional details can be added after the main entry, using proper indentation
+  for multi-line entries
 
 ### Breaking Changes Format
 
 For breaking changes, use this format:
 
 ```markdown
-- **Feature Name**: Description of the breaking change. See migration guide below. [PR 1818](https://github.com/shakacode/package_json/pull/1818) by [username](https://github.com/username).
+- **Feature Name**: Description of the breaking change. See migration guide
+  below. [PR 1818](https://github.com/shakacode/package_json/pull/1818) by
+  [username](https://github.com/username).
 
 **Migration Guide:**
 
@@ -57,7 +66,8 @@ For breaking changes, use this format:
 
 ### Category Organization
 
-Entries should be organized under these section headings. The project uses both standard and custom headings:
+Entries should be organized under these section headings. The project uses both
+standard and custom headings:
 
 **Standard headings** (from keepachangelog.com) - use these for most changes:
 
@@ -69,12 +79,14 @@ Entries should be organized under these section headings. The project uses both 
 - `#### Security` - Security-related changes
 - `#### Improved` - Improvements to existing features
 
-**Custom headings** (project-specific) - use sparingly when standard headings don't fit:
+**Custom headings** (project-specific) - use sparingly when standard headings
+don't fit:
 
 - `#### Breaking Changes` - Breaking changes with migration guides
 - `#### Performance` - Performance improvements
 
-**Prefer standard headings.** Only use custom headings when the change needs more specific categorization.
+**Prefer standard headings.** Only use custom headings when the change needs
+more specific categorization.
 
 **Only include section headings that have entries.**
 
@@ -96,41 +108,49 @@ This will:
 ### For Regular Changelog Updates
 
 1. **Determine the correct version tag to compare against**:
-
-   - First, check the tag dates: `git log --tags --simplify-by-decoration --pretty="format:%ai %d" | head -10`
+   - First, check the tag dates:
+     `git log --tags --simplify-by-decoration --pretty="format:%ai %d" | head -10`
    - Find the latest version tag and its date
    - Compare main branch date to the tag date
-   - If the tag is NEWER than main, it means main needs to be updated to include the tag's commits
-   - **CRITICAL**: Always use `git log TAG..BRANCH` to find commits that are in the tag but not in the branch, as the tag may be ahead
+   - If the tag is NEWER than main, it means main needs to be updated to include
+     the tag's commits
+   - **CRITICAL**: Always use `git log TAG..BRANCH` to find commits that are in
+     the tag but not in the branch, as the tag may be ahead
 
 2. **Check commits and version boundaries**:
-
-   - Run `git log --oneline LAST_TAG..main` to see commits since the last release
-   - Also check `git log --oneline main..LAST_TAG` to see if the tag is ahead of main
-   - If the tag is ahead, entries in "Unreleased" section may actually belong to that tagged version
+   - Run `git log --oneline LAST_TAG..main` to see commits since the last
+     release
+   - Also check `git log --oneline main..LAST_TAG` to see if the tag is ahead of
+     main
+   - If the tag is ahead, entries in "Unreleased" section may actually belong to
+     that tagged version
    - Identify which commits contain user-visible changes
    - Extract PR numbers and author information from commit messages
    - **Never ask the user for PR details** - get them from the git history
 
-3. **Validate** that changes are user-visible (per the criteria above). If not user-visible, skip those commits.
+3. **Validate** that changes are user-visible (per the criteria above). If not
+   user-visible, skip those commits.
 
-4. **Read the current CHANGELOG.md** to understand the existing structure and formatting.
+4. **Read the current CHANGELOG.md** to understand the existing structure and
+   formatting.
 
 5. **Determine where entries should go**:
-
-   - If the latest version tag is NEWER than main branch, move entries from "Unreleased" to that version section
+   - If the latest version tag is NEWER than main branch, move entries from
+     "Unreleased" to that version section
    - If main is ahead of the latest tag, add new entries to "Unreleased"
    - Always verify the version date in CHANGELOG.md matches the actual tag date
 
-6. **Add or move entries** to the appropriate section under appropriate category headings.
-
-   - **CRITICAL**: When moving entries from "Unreleased" to a version section, merge them with existing entries under the same category heading
-   - **NEVER create duplicate section headings** (e.g., don't create two "### Fixed" sections)
-   - If the version section already has a category heading (e.g., "### Fixed"), add the moved entries to that existing section
+6. **Add or move entries** to the appropriate section under appropriate category
+   headings.
+   - **CRITICAL**: When moving entries from "Unreleased" to a version section,
+     merge them with existing entries under the same category heading
+   - **NEVER create duplicate section headings** (e.g., don't create two "###
+     Fixed" sections)
+   - If the version section already has a category heading (e.g., "### Fixed"),
+     add the moved entries to that existing section
    - Maintain the category order as defined above
 
 7. **Verify formatting**:
-
    - Bold description with period
    - Proper PR link (NO hash symbol)
    - Proper author link
@@ -151,13 +171,13 @@ This will:
 When releasing from beta to a stable version (e.g., v1.1.0-beta.3 → v1.1.0):
 
 1. **Remove all beta version labels** from the changelog:
-
-   - Change `### [v1.1.0-beta.1]`, `### [v1.1.0-beta.2]`, etc. to a single `### [v1.1.0]` section
+   - Change `### [v1.1.0-beta.1]`, `### [v1.1.0-beta.2]`, etc. to a single
+     `### [v1.1.0]` section
    - Combine all beta entries into the stable release section
 
 2. **Consolidate duplicate entries**:
-
-   - If bug fixes or changes were made to features introduced in earlier betas, keep only the final state
+   - If bug fixes or changes were made to features introduced in earlier betas,
+     keep only the final state
    - Remove redundant changelog entries for fixes to beta features
    - Keep the most recent/accurate description of each change
 
@@ -191,21 +211,29 @@ grep -A 3 "^#### " CHANGELOG.md | head -30
 ### Good Entry Example
 
 ```markdown
-- **New feature description**: Added helpful functionality that users will appreciate. [PR 123](https://github.com/shakacode/package_json/pull/123) by [username](https://github.com/username).
+- **New feature description**: Added helpful functionality that users will
+  appreciate. [PR 123](https://github.com/shakacode/package_json/pull/123) by
+  [username](https://github.com/username).
 ```
 
 ### Entry with Sub-bullets Example
 
 ```markdown
-- **Multi-part feature**: Added new configuration options for enhanced functionality:
-  - `option_name`: Description of the option and its purpose. [PR 123](https://github.com/shakacode/package_json/pull/123) by [username](https://github.com/username)
-  - `another_option`: Description of another option. [PR 124](https://github.com/shakacode/package_json/pull/124) by [username](https://github.com/username)
+- **Multi-part feature**: Added new configuration options for enhanced
+  functionality:
+  - `option_name`: Description of the option and its purpose.
+    [PR 123](https://github.com/shakacode/package_json/pull/123) by
+    [username](https://github.com/username)
+  - `another_option`: Description of another option.
+    [PR 124](https://github.com/shakacode/package_json/pull/124) by
+    [username](https://github.com/username)
 ```
 
 ### Breaking Change Example
 
 ```markdown
-- **Method Removal**: Several deprecated methods have been removed. If you're using any of the following methods, you'll need to migrate:
+- **Method Removal**: Several deprecated methods have been removed. If you're
+  using any of the following methods, you'll need to migrate:
   - `old_method_one()`
   - `old_method_two()`
 
