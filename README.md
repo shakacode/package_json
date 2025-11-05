@@ -268,18 +268,33 @@ prompt that will allow you to experiment.
 
 ### Git Hooks
 
-To set up the pre-commit hook that prevents simple test and lint failures:
+The repository includes a pre-commit hook that prevents simple test and lint
+failures from being committed. The hook is automatically installed when you run
+`bin/setup`.
+
+To manually install or update the hook:
 
 ```bash
 bin/setup-git-hooks
 ```
 
-This will install a pre-commit hook that:
+The pre-commit hook provides fast feedback by:
 
-- Runs RuboCop on staged Ruby files
-- Runs all RSpec tests
+- Running RuboCop on staged Ruby files only (not the entire codebase)
+- Running RSpec tests for affected files only (based on changed lib files)
+- Skipping tests if only non-code files are changed
 
-To bypass the hook (not recommended), use `git commit --no-verify`.
+**Important:** The pre-commit hook runs _fast_ checks only. Before pushing or
+creating a PR, run the full test suite:
+
+```bash
+bundle exec rubocop      # Lint entire codebase
+bundle exec rspec        # Run full test suite
+```
+
+CI will enforce that all tests and linting pass on the entire codebase.
+
+To bypass the hook in exceptional cases, use `git commit --no-verify`.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To
 release a new version, update the version number in `version.rb`, and then tag

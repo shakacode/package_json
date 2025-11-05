@@ -5,6 +5,10 @@
 # Run this after cloning the repository or when hooks are updated
 
 require "fileutils"
+require "digest"
+
+# Hook version - update this when the hook logic changes
+HOOK_VERSION = "1.0.0"
 
 git_dir = `git rev-parse --git-common-dir`.strip
 hooks_dir = File.join(git_dir, "hooks")
@@ -20,6 +24,7 @@ FileUtils.mkdir_p(hooks_dir) unless File.directory?(hooks_dir)
 hook_content = <<~BASH
   #!/bin/bash
   # Pre-commit hook to run linting and tests on staged files
+  # Version: #{HOOK_VERSION}
 
   set -e
 
@@ -37,7 +42,7 @@ hook_content = <<~BASH
   if [ -n "$STAGED_RUBY_FILES" ]; then
     echo -e "${YELLOW}Checking Ruby files with RuboCop...${NC}"
 
-    # Run RuboCop on staged files
+    # Run RuboCop on staged files only
     if ! bundle exec rubocop $STAGED_RUBY_FILES; then
       echo -e "${RED}RuboCop failed! Please fix the issues before committing.${NC}"
       echo -e "${YELLOW}You can run 'bundle exec rubocop -a' to auto-fix some issues.${NC}"
@@ -45,15 +50,34 @@ hook_content = <<~BASH
     fi
 
     echo -e "${GREEN}RuboCop passed!${NC}"
-  else
-    echo -e "${YELLOW}No Ruby files to lint.${NC}"
-  fi
 
-  # Run RSpec tests
-  echo -e "${YELLOW}Running RSpec tests...${NC}"
-  if ! bundle exec rspec; then
-    echo -e "${RED}Tests failed! Please fix the tests before committing.${NC}"
-    exit 1
+    # Find corresponding spec files for changed lib files
+    SPEC_FILES=""
+    for file in $STAGED_RUBY_FILES; do
+      if [[ $file == lib/* ]]; then
+        # Convert lib/package_json/foo.rb to spec/package_json/foo_spec.rb
+        spec_file=$(echo "$file" | sed 's|^lib/|spec/|' | sed 's|\\.rb$|_spec.rb|')
+        if [ -f "$spec_file" ]; then
+          SPEC_FILES="$SPEC_FILES $spec_file"
+        fi
+      elif [[ $file == spec/* ]]; then
+        # If it's already a spec file, include it
+        SPEC_FILES="$SPEC_FILES $file"
+      fi
+    done
+
+    if [ -n "$SPEC_FILES" ]; then
+      echo -e "${YELLOW}Running affected RSpec tests...${NC}"
+      if ! bundle exec rspec $SPEC_FILES; then
+        echo -e "${RED}Tests failed! Please fix the tests before committing.${NC}"
+        exit 1
+      fi
+      echo -e "${GREEN}Affected tests passed!${NC}"
+    else
+      echo -e "${YELLOW}No corresponding spec files found for changed files.${NC}"
+    fi
+  else
+    echo -e "${YELLOW}No Ruby files to check.${NC}"
   fi
 
   echo -e "${GREEN}All pre-commit checks passed!${NC}"
@@ -64,9 +88,13 @@ File.write(pre_commit_hook, hook_content)
 FileUtils.chmod(0o755, pre_commit_hook)
 
 puts "✓ Pre-commit hook installed at #{pre_commit_hook}"
+puts "  Version: #{HOOK_VERSION}"
 puts ""
 puts "The pre-commit hook will:"
-puts "  • Run RuboCop on staged Ruby files"
-puts "  • Run all RSpec tests"
+puts "  • Run RuboCop on staged Ruby files only (fast)"
+puts "  • Run RSpec tests for affected files only (fast)"
+puts "  • Full test suite runs in CI"
 puts ""
 puts "To bypass the hook (not recommended), use: git commit --no-verify"
+puts ""
+puts "Note: Run 'bundle exec rubocop' before pushing to ensure all files pass linting."
