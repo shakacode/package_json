@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    package_json (0.1.1)
+    package_json (0.2.0)
 
 GEM
   remote: https://rubygems.org/
