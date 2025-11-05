@@ -12,13 +12,17 @@ class PackageJson
 
   def self.fetch_default_fallback_manager: () -> Symbol
 
-  def self.read: (?String path_to_directory, ?package_manager: (:npm | :yarn_berry | :yarn_classic | :pnpm | :bun)) -> PackageJson
+  def self.read: (?String path_to_directory, ?fallback_manager: (:npm | :yarn_berry | :yarn_classic | :pnpm | :bun)) -> PackageJson
 
-  def initialize: (?String path_to_directory, ?package_manager: (:npm | :yarn_berry | :yarn_classic | :pnpm | :bun)) -> PackageJson
+  def initialize: (?String path_to_directory, ?fallback_manager: (:npm | :yarn_berry | :yarn_classic | :pnpm | :bun)) -> PackageJson
 
   def fetch: (String key, ?untyped default) -> (String | Hash[String, untyped] | Array[untyped])
 
   def merge!: () { (Hash[String | Symbol, untyped]) -> Hash[String | Symbol, untyped] } -> void
+
+  def delete!: (String key) -> untyped
+
+  def record_package_manager!: () -> void
 
   private
 
@@ -30,9 +34,9 @@ class PackageJson
 
   def package_json_path: () -> String
 
-  def ensure_package_json_exists: ((:npm | :yarn_berry | :yarn_classic | :pnpm | :bun) package_manager) -> void
+  def ensure_package_json_exists: () -> bool
 
-  def read_package_json: () -> void
+  def read_package_json: () -> Hash[String, untyped]
 
   def write_package_json: (_ToJson contents) -> void
 end
