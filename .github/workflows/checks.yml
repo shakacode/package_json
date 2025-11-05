@@ -9,7 +9,7 @@ on:
     - cron: '0 5 * * MON'
 concurrency:
   # Pushing new changes to a branch will cancel any in-progress CI runs
-  group: ${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 # Restrict jobs in this workflow to only be allowed to read this repo by default.
