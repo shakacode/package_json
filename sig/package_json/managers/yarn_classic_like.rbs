@@ -15,6 +15,8 @@ class PackageJson
 
       def with_frozen_flag: (bool frozen) -> Array[String]
 
+      def exact_flag: (bool exact) -> (String | nil)
+
       def package_type_install_flag: (Symbol type) -> (String | nil)
     end
   end
