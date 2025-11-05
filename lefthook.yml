@@ -6,11 +6,11 @@ pre-commit:
   parallel: true
   commands:
     rubocop:
-      glob: '*.rb'
+      glob: '**/*.rb'
       run: bin/lefthook/rubocop-lint {staged_files}
 
     rspec:
-      glob: '*.rb'
+      glob: '**/*.rb'
       run: bin/lefthook/rspec-affected {staged_files}
 
     trailing-newlines:
