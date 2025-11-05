@@ -79,6 +79,13 @@ files and JavaScript package managers.
 - **Testing**: RSpec for Ruby tests
 - **Linting**: RuboCop for Ruby
 
+## Type Signatures & Documentation
+
+**This project uses RBS (Ruby Signature) files for type documentation**
+
+Everything should be captured in the type definitions, including private
+methods.
+
 ## Important Notes
 
 - This gem provides a "middle-level" abstraction over JavaScript package

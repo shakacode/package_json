@@ -177,11 +177,15 @@ package_json.manager.add(["eslint", "prettier"], type: :dev)
 
 # adds dotenv-webpack v6 as a production dependency
 package_json.manager.add(["dotenv-webpack@^6"])
+
+# adds react-on-rails with exact version (no ^ or ~)
+package_json.manager.add(["react-on-rails@16.0.0"], exact: true)
 ```
 
-| Option | Description                                                                                 |
-| ------ | ------------------------------------------------------------------------------------------- |
-| `type` | The type to add the dependencies as; either `:production` (default), `:dev`, or `:optional` |
+| Option  | Description                                                                                 |
+| ------- | ------------------------------------------------------------------------------------------- |
+| `type`  | The type to add the dependencies as; either `:production` (default), `:dev`, or `:optional` |
+| `exact` | If true, saves packages with exact versions (no `^` or `~` prefix)                          |
 
 #### Removing dependencies
 
