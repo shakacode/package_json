@@ -81,44 +81,10 @@ files and JavaScript package managers.
 
 ## Type Signatures & Documentation
 
-**This project uses RBS (Ruby Signature) files for type documentation, NOT YARD.**
+**This project uses RBS (Ruby Signature) files for type documentation**
 
-### Critical Rules for Documentation
-
-1. **NEVER add YARD `@param` or `@return` documentation to methods**
-   - Type information belongs in RBS files (`sig/` directory)
-   - Ruby files should have minimal comments (basic description only)
-
-2. **ALWAYS update RBS files when adding/modifying method signatures**
-   - Location: `sig/package_json/managers/*.rbs`
-   - Include all parameters with their types
-   - Example: `def add: (Array[String] packages, ?type: :production | :dev | :optional, ?exact: bool) -> (bool | nil)`
-
-3. **Keep Ruby code clean**
-   - Simple `# Does X` comments are fine
-   - NO parameter lists, NO type annotations in comments
-   - Let RBS files be the source of truth for types
-
-### Example: Adding a New Parameter
-
-**WRONG** (Don't do this):
-```ruby
-# Adds packages
-# @param packages [Array<String>] packages to add
-# @param exact [Boolean] use exact versions
-def add(packages, exact: false)
-```
-
-**CORRECT** (Do this):
-```ruby
-# Adds packages
-def add(packages, exact: false)
-```
-
-Then update `sig/package_json/managers/base.rbs`:
-```rbs
-def add: (Array[String] packages, ?exact: bool) -> (bool | nil)
-```
+Everything should be captured in the type definitions, including private
+methods.
 
 ## Important Notes
 
