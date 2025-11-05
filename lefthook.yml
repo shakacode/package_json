@@ -1,0 +1,25 @@
+# Lefthook configuration
+# Fast pre-commit hooks that check staged files only
+# Install with: bundle exec lefthook install
+
+pre-commit:
+  parallel: true
+  commands:
+    rubocop:
+      glob: '*.rb'
+      run: bin/lefthook/rubocop-lint {staged_files}
+
+    rspec:
+      glob: '*.rb'
+      run: bin/lefthook/rspec-affected {staged_files}
+
+    trailing-newlines:
+      run: bin/lefthook/check-trailing-newlines {staged_files}
+
+pre-push:
+  commands:
+    full-rubocop:
+      run: bundle exec rubocop
+
+    full-rspec:
+      run: bundle exec rspec

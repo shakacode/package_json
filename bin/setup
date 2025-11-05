@@ -5,5 +5,5 @@ set -vx
 
 bundle install
 
-# Set up Git hooks automatically
-bin/setup-git-hooks
+# Set up Git hooks with Lefthook
+bundle exec lefthook install

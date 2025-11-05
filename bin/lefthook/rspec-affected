@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Run RSpec tests for affected files
+set -euo pipefail
+
+files="$*"
+
+if [ -z "$files" ]; then
+  echo "✅ No Ruby files changed"
+  exit 0
+fi
+
+# Find corresponding spec files for changed lib files
+spec_files=""
+for file in $files; do
+  if [[ $file == lib/* ]]; then
+    # Convert lib/package_json/foo.rb to spec/package_json/foo_spec.rb
+    spec_file=$(echo "$file" | sed 's|^lib/|spec/|' | sed 's|\.rb$|_spec.rb|')
+    if [ -f "$spec_file" ]; then
+      spec_files="$spec_files $spec_file"
+    fi
+  elif [[ $file == spec/* ]]; then
+    # If it's already a spec file, include it
+    spec_files="$spec_files $file"
+  fi
+done
+
+if [ -z "$spec_files" ]; then
+  echo "✅ No corresponding spec files found for changed files"
+  exit 0
+fi
+
+echo "🧪 Running affected RSpec tests:"
+printf "  %s\n" $spec_files
+
+if ! bundle exec rspec $spec_files; then
+  echo ""
+  echo "❌ Tests failed!"
+  echo "💡 Run full suite: bundle exec rspec"
+  echo "🚫 Skip hook: git commit --no-verify"
+  exit 1
+fi
+
+echo "✅ Affected tests passed"

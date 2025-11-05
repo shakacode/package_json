@@ -268,33 +268,45 @@ prompt that will allow you to experiment.
 
 ### Git Hooks
 
-The repository includes a pre-commit hook that prevents simple test and lint
-failures from being committed. The hook is automatically installed when you run
-`bin/setup`.
+This project uses [Lefthook](https://github.com/evilmartians/lefthook) to manage
+Git hooks, providing fast and efficient pre-commit checks. Hooks are
+automatically installed when you run `bin/setup`.
 
-To manually install or update the hook:
-
-```bash
-bin/setup-git-hooks
-```
-
-The pre-commit hook provides fast feedback by:
-
-- Running RuboCop on staged Ruby files only (not the entire codebase)
-- Running RSpec tests for affected files only (based on changed lib files)
-- Skipping tests if only non-code files are changed
-
-**Important:** The pre-commit hook runs _fast_ checks only. Before pushing or
-creating a PR, run the full test suite:
+To manually install or update hooks:
 
 ```bash
-bundle exec rubocop      # Lint entire codebase
-bundle exec rspec        # Run full test suite
+bundle exec lefthook install
 ```
 
-CI will enforce that all tests and linting pass on the entire codebase.
+#### Pre-commit Hooks (Fast)
 
-To bypass the hook in exceptional cases, use `git commit --no-verify`.
+The pre-commit hooks run in parallel on staged files only:
+
+- **RuboCop**: Lints staged Ruby files with auto-fix suggestions
+- **RSpec**: Runs tests for affected files (maps `lib/` changes to `spec/`)
+- **Trailing Newlines**: Ensures all files end with a newline
+
+These hooks complete in seconds, not minutes, providing immediate feedback.
+
+#### Pre-push Hooks (Comprehensive)
+
+Before pushing to remote, Lefthook runs the full test suite:
+
+- **Full RuboCop**: Lints entire codebase
+- **Full RSpec**: Runs all tests
+
+This ensures comprehensive verification before sharing your changes.
+
+#### Bypassing Hooks
+
+In exceptional cases, you can bypass hooks:
+
+```bash
+git commit --no-verify  # Skip pre-commit hooks
+git push --no-verify    # Skip pre-push hooks
+```
+
+**Note:** CI will enforce all checks regardless of local bypasses.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To
 release a new version, update the version number in `version.rb`, and then tag
