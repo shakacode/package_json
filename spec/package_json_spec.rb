@@ -136,9 +136,86 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "uses the fallback manager" do
+      it "uses the fallback manager when no lockfile is present" do
         with_package_json_file({ "version" => "1.0.0" }) do
           package_json = described_class.read(Dir.pwd, fallback_manager: :yarn_classic)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "detects npm from package-lock.json" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("package-lock.json", "{}")
+          package_json = described_class.read(Dir.pwd, fallback_manager: :yarn_classic)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::NpmLike
+        end
+      end
+
+      it "detects pnpm from pnpm-lock.yaml" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("pnpm-lock.yaml", "lockfileVersion: '6.0'")
+          package_json = described_class.read(Dir.pwd, fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::PnpmLike
+        end
+      end
+
+      it "detects bun from bun.lockb" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("bun.lockb", "")
+          package_json = described_class.read(Dir.pwd, fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::BunLike
+        end
+      end
+
+      it "detects yarn classic from yarn.lock without __metadata:" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("yarn.lock", "# yarn lockfile v1\n\npackage@^1.0.0:\n  version \"1.0.0\"")
+          package_json = described_class.read(Dir.pwd, fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "detects yarn berry from yarn.lock with __metadata:" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("yarn.lock", "__metadata:\n  version: 6\n  cacheKey: 8")
+          package_json = described_class.read(Dir.pwd, fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnBerryLike
+        end
+      end
+
+      it "prioritizes bun.lockb over other lockfiles" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("bun.lockb", "")
+          File.write("package-lock.json", "{}")
+          File.write("yarn.lock", "# yarn lockfile v1")
+          package_json = described_class.read(Dir.pwd, fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::BunLike
+        end
+      end
+
+      it "prioritizes pnpm-lock.yaml over yarn.lock and package-lock.json" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("pnpm-lock.yaml", "lockfileVersion: '6.0'")
+          File.write("package-lock.json", "{}")
+          File.write("yarn.lock", "# yarn lockfile v1")
+          package_json = described_class.read(Dir.pwd, fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::PnpmLike
+        end
+      end
+
+      it "prioritizes yarn.lock over package-lock.json" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("yarn.lock", "# yarn lockfile v1")
+          File.write("package-lock.json", "{}")
+          package_json = described_class.read(Dir.pwd, fallback_manager: :bun)
 
           expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
         end
@@ -306,11 +383,56 @@ RSpec.describe PackageJson do
         end
       end
 
-      it "uses the fallback manager" do
+      it "uses the fallback manager when no lockfile is present" do
         with_package_json_file({ "version" => "1.0.0" }) do
           package_json = described_class.new(fallback_manager: :yarn_classic)
 
           expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "detects npm from package-lock.json" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("package-lock.json", "{}")
+          package_json = described_class.new(fallback_manager: :yarn_classic)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::NpmLike
+        end
+      end
+
+      it "detects pnpm from pnpm-lock.yaml" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("pnpm-lock.yaml", "lockfileVersion: '6.0'")
+          package_json = described_class.new(fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::PnpmLike
+        end
+      end
+
+      it "detects bun from bun.lockb" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("bun.lockb", "")
+          package_json = described_class.new(fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::BunLike
+        end
+      end
+
+      it "detects yarn classic from yarn.lock without __metadata:" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("yarn.lock", "# yarn lockfile v1\n\npackage@^1.0.0:\n  version \"1.0.0\"")
+          package_json = described_class.new(fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "detects yarn berry from yarn.lock with __metadata:" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("yarn.lock", "__metadata:\n  version: 6\n  cacheKey: 8")
+          package_json = described_class.new(fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnBerryLike
         end
       end
 
