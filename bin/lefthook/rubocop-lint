@@ -2,20 +2,18 @@
 # Lint Ruby files with RuboCop
 set -euo pipefail
 
-files="$*"
-
-if [ -z "$files" ]; then
+if [ $# -eq 0 ]; then
   echo "✅ No Ruby files to lint"
   exit 0
 fi
 
 echo "🔍 RuboCop on staged Ruby files:"
-printf "  %s\n" $files
+printf "  %s\n" "$@"
 
-if ! bundle exec rubocop --force-exclusion --display-cop-names -- $files; then
+if ! bundle exec rubocop --force-exclusion --display-cop-names -- "$@"; then
   echo ""
   echo "❌ RuboCop check failed!"
-  echo "💡 Auto-fix: bundle exec rubocop -a --force-exclusion -- $files"
+  echo "💡 Auto-fix: bundle exec rubocop -a --force-exclusion -- <files>"
   echo "🚫 Skip hook: git commit --no-verify"
   exit 1
 fi
