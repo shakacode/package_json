@@ -266,6 +266,11 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run
 `rake spec` to run the tests. You can also run `bin/console` for an interactive
 prompt that will allow you to experiment.
 
+To install this gem onto your local machine, run `bundle exec rake install`. To
+release a new version, update the version number in `version.rb`, and then tag
+the commit with the version prefixed with a `v`, which will trigger the release
+workflow to publish the new version to [rubygems.org](https://rubygems.org).
+
 ### Git Hooks
 
 This project uses [Lefthook](https://github.com/evilmartians/lefthook) to manage
@@ -307,11 +312,6 @@ git push --no-verify    # Skip pre-push hooks
 ```
 
 **Note:** CI will enforce all checks regardless of local bypasses.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To
-release a new version, update the version number in `version.rb`, and then tag
-the commit with the version prefixed with a `v`, which will trigger the release
-workflow to publish the new version to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 

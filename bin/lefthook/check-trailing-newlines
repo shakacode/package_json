@@ -23,7 +23,7 @@ if [ ${#failed_files[@]} -gt 0 ]; then
   echo ""
   echo "❌ Trailing newline check failed!"
   echo "💡 Add trailing newlines to: ${failed_files[*]}"
-  echo "🔧 Quick fix: for file in ${failed_files[*]}; do echo >> \"\$file\"; done"
+  echo "🔧 Quick fix: for file in \"\${failed_files[@]}\"; do echo >> \"\$file\"; done"
   echo "🚫 Skip hook: git commit --no-verify"
   exit 1
 fi
