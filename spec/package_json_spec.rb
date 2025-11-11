@@ -189,6 +189,17 @@ RSpec.describe PackageJson do
         end
       end
 
+      it "defaults to yarn classic if yarn.lock is unreadable" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("yarn.lock", "")
+          allow(File).to receive(:read).and_call_original
+          allow(File).to receive(:read).with("#{Dir.pwd}/yarn.lock", 300).and_raise(StandardError)
+          package_json = described_class.read(Dir.pwd, fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
       it "prioritizes bun.lockb over other lockfiles" do
         with_package_json_file({ "version" => "1.0.0" }) do
           File.write("bun.lockb", "")
@@ -433,6 +444,17 @@ RSpec.describe PackageJson do
           package_json = described_class.new(fallback_manager: :npm)
 
           expect(package_json.manager).to be_a PackageJson::Managers::YarnBerryLike
+        end
+      end
+
+      it "defaults to yarn classic if yarn.lock is unreadable" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          File.write("yarn.lock", "")
+          allow(File).to receive(:read).and_call_original
+          allow(File).to receive(:read).with("#{Dir.pwd}/yarn.lock", 300).and_raise(StandardError)
+          package_json = described_class.new(fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
         end
       end
 
