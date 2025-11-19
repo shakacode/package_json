@@ -7,6 +7,8 @@ pre-commit:
   commands:
     rubocop:
       glob: '**/*.rb'
+      # Uses --force-exclusion to respect .rubocop.yml exclusions (e.g., bin/**)
+      # even when files are explicitly passed as arguments
       run: bin/lefthook/rubocop-lint {staged_files}
 
     rspec:
@@ -17,6 +19,7 @@ pre-commit:
       run: bin/lefthook/check-trailing-newlines {staged_files}
 
 pre-push:
+  parallel: true
   commands:
     full-rubocop:
       run: bundle exec rubocop

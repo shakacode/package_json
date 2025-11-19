@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 # Run RSpec tests for affected files
+# NOTE: This script assumes a 1:1 mapping between lib/ and spec/ files.
+# It will NOT catch:
+# - Changes to files without corresponding specs
+# - Shared modules that affect multiple specs
+# - Changes that require integration tests
+# For comprehensive testing, run the full suite: bundle exec rspec
 set -euo pipefail
 
 if [ $# -eq 0 ]; then
@@ -10,6 +16,11 @@ fi
 # Find corresponding spec files for changed lib files
 spec_files=()
 for file in "$@"; do
+  # Skip non-existent files (e.g., deleted files)
+  if [ ! -f "$file" ]; then
+    continue
+  fi
+
   if [[ $file == lib/* ]]; then
     # Convert lib/package_json/foo.rb to spec/package_json/foo_spec.rb
     spec_file=$(echo "$file" | sed 's|^lib/|spec/|' | sed 's|\.rb$|_spec.rb|')

@@ -7,10 +7,23 @@ if [ $# -eq 0 ]; then
   exit 0
 fi
 
-echo "🔍 RuboCop on staged Ruby files:"
-printf "  %s\n" "$@"
+# Filter out non-existent files (e.g., deleted files)
+existing_files=()
+for file in "$@"; do
+  if [ -f "$file" ]; then
+    existing_files+=("$file")
+  fi
+done
 
-if ! bundle exec rubocop --force-exclusion --display-cop-names -- "$@"; then
+if [ ${#existing_files[@]} -eq 0 ]; then
+  echo "✅ No existing Ruby files to lint"
+  exit 0
+fi
+
+echo "🔍 RuboCop on staged Ruby files:"
+printf "  %s\n" "${existing_files[@]}"
+
+if ! bundle exec rubocop --force-exclusion --display-cop-names -- "${existing_files[@]}"; then
   echo ""
   echo "❌ RuboCop check failed!"
   echo "💡 Auto-fix: bundle exec rubocop -a --force-exclusion -- <files>"
