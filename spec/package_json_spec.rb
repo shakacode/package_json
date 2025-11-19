@@ -193,7 +193,7 @@ RSpec.describe PackageJson do
         with_package_json_file({ "version" => "1.0.0" }) do
           File.write("yarn.lock", "")
           allow(File).to receive(:read).and_call_original
-          allow(File).to receive(:read).with("#{Dir.pwd}/yarn.lock", 300).and_raise(StandardError)
+          allow(File).to receive(:read).with("#{Dir.pwd}/yarn.lock", 1000).and_raise(StandardError)
           package_json = described_class.read(Dir.pwd, fallback_manager: :npm)
 
           expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
@@ -451,7 +451,7 @@ RSpec.describe PackageJson do
         with_package_json_file({ "version" => "1.0.0" }) do
           File.write("yarn.lock", "")
           allow(File).to receive(:read).and_call_original
-          allow(File).to receive(:read).with("#{Dir.pwd}/yarn.lock", 300).and_raise(StandardError)
+          allow(File).to receive(:read).with("#{Dir.pwd}/yarn.lock", 1000).and_raise(StandardError)
           package_json = described_class.new(fallback_manager: :npm)
 
           expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
