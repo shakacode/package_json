@@ -117,10 +117,11 @@ class PackageJson
   def detect_yarn_version_from_lockfile
     lockfile_path = "#{directory}/yarn.lock"
 
-    # Read the first few lines to determine the version
+    # Read the first 1000 bytes to determine the version
     # Yarn Berry lockfiles start with "__metadata:" within the first few lines
     # Yarn Classic lockfiles use the older format without __metadata:
-    content = File.read(lockfile_path, 300) # Read first 300 chars - sufficient to detect __metadata:
+    # Using 1000 bytes provides good coverage even with large initial comments
+    content = File.read(lockfile_path, 1000)
 
     # Yarn Berry uses __metadata: at the start
     return :yarn_berry if content.include?("__metadata:")
