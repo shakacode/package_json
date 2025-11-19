@@ -30,6 +30,14 @@ class PackageJson
 
   def determine_package_manager: (Symbol fallback_manager) -> Symbol
 
+  def parse_package_manager: (String package_manager) -> Symbol
+
+  def detect_manager_from_lockfile: () -> Symbol?
+
+  def detect_yarn_version_from_lockfile: () -> Symbol
+
+  def determine_yarn_version: (String version) -> Symbol
+
   def new_package_manager: (Symbol package_manager_name) -> Managers::Base
 
   def package_json_path: () -> String
