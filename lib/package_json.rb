@@ -14,6 +14,10 @@ class PackageJson
 
   class NotImplementedError < Error; end
 
+  # Number of bytes to read from lockfile for version detection
+  # Provides good coverage even with large initial comments
+  LOCKFILE_DETECTION_READ_SIZE = 1000
+
   attr_reader :manager, :directory
 
   def self.fetch_default_fallback_manager
@@ -96,32 +100,24 @@ class PackageJson
 
   def detect_manager_from_lockfile
     # Check for lockfiles in priority order
-    # bun.lockb - Bun
     return :bun if File.exist?("#{directory}/bun.lockb")
-
-    # pnpm-lock.yaml - pnpm
     return :pnpm if File.exist?("#{directory}/pnpm-lock.yaml")
-
-    # yarn.lock - Yarn (need to distinguish between Berry and Classic)
-    if File.exist?("#{directory}/yarn.lock")
-      return detect_yarn_version_from_lockfile
-    end
-
-    # package-lock.json - npm
+    return detect_yarn_version_from_lockfile if File.exist?("#{directory}/yarn.lock")
     return :npm if File.exist?("#{directory}/package-lock.json")
 
-    # No lockfile found
     nil
   end
 
   def detect_yarn_version_from_lockfile
     lockfile_path = "#{directory}/yarn.lock"
 
-    # Read the first 1000 bytes to determine the version
+    # Check file exists to avoid race condition
+    return :yarn_classic unless File.exist?(lockfile_path)
+
+    # Read the first chunk of bytes to determine the version
     # Yarn Berry lockfiles start with "__metadata:" within the first few lines
     # Yarn Classic lockfiles use the older format without __metadata:
-    # Using 1000 bytes provides good coverage even with large initial comments
-    content = File.read(lockfile_path, 1000)
+    content = File.read(lockfile_path, LOCKFILE_DETECTION_READ_SIZE)
 
     # Yarn Berry uses __metadata: at the start
     return :yarn_berry if content.include?("__metadata:")
@@ -129,7 +125,7 @@ class PackageJson
     # Default to Yarn Classic for older format
     :yarn_classic
   rescue StandardError
-    # On error (e.g., file read failure, corrupted lockfile), default to Yarn Classic
+    # On error (e.g., corrupted lockfile), default to Yarn Classic
     :yarn_classic
   end
 
