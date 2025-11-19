@@ -193,7 +193,20 @@ RSpec.describe PackageJson do
         with_package_json_file({ "version" => "1.0.0" }) do
           File.write("yarn.lock", "")
           allow(File).to receive(:read).and_call_original
-          allow(File).to receive(:read).with("#{Dir.pwd}/yarn.lock", 1000).and_raise(StandardError)
+          allow(File).to receive(:read).with("#{Dir.pwd}/yarn.lock",
+                                             PackageJson::LOCKFILE_DETECTION_READ_SIZE).and_raise(StandardError)
+          package_json = described_class.read(Dir.pwd, fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "defaults to yarn classic if yarn.lock disappears before reading (race condition)" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          # Simulate race condition: file exists during initial check but not when reading version
+          lockfile_path = "#{Dir.pwd}/yarn.lock"
+          allow(File).to receive(:exist?).and_call_original
+          allow(File).to receive(:exist?).with(lockfile_path).and_return(true, false)
           package_json = described_class.read(Dir.pwd, fallback_manager: :npm)
 
           expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
@@ -451,7 +464,20 @@ RSpec.describe PackageJson do
         with_package_json_file({ "version" => "1.0.0" }) do
           File.write("yarn.lock", "")
           allow(File).to receive(:read).and_call_original
-          allow(File).to receive(:read).with("#{Dir.pwd}/yarn.lock", 1000).and_raise(StandardError)
+          allow(File).to receive(:read).with("#{Dir.pwd}/yarn.lock",
+                                             PackageJson::LOCKFILE_DETECTION_READ_SIZE).and_raise(StandardError)
+          package_json = described_class.new(fallback_manager: :npm)
+
+          expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
+        end
+      end
+
+      it "defaults to yarn classic if yarn.lock disappears before reading (race condition)" do
+        with_package_json_file({ "version" => "1.0.0" }) do
+          # Simulate race condition: file exists during initial check but not when reading version
+          lockfile_path = "#{Dir.pwd}/yarn.lock"
+          allow(File).to receive(:exist?).and_call_original
+          allow(File).to receive(:exist?).with(lockfile_path).and_return(true, false)
           package_json = described_class.new(fallback_manager: :npm)
 
           expect(package_json.manager).to be_a PackageJson::Managers::YarnClassicLike
