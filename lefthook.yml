@@ -11,10 +11,6 @@ pre-commit:
       # even when files are explicitly passed as arguments
       run: bin/lefthook/rubocop-lint {staged_files}
 
-    rspec:
-      glob: '**/*.rb'
-      run: bin/lefthook/rspec-affected {staged_files}
-
     trailing-newlines:
       run: bin/lefthook/check-trailing-newlines {staged_files}
 

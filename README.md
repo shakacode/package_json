@@ -288,14 +288,9 @@ bundle exec lefthook install
 The pre-commit hooks run in parallel on staged files only:
 
 - **RuboCop**: Lints staged Ruby files with auto-fix suggestions
-- **RSpec**: Runs tests for affected files (maps `lib/` changes to `spec/`)
-  - _Note: Assumes 1:1 mapping between lib/ and spec/ files. Won't catch changes
-    to shared modules or files without specs. Run full suite for comprehensive
-    testing._
 - **Trailing Newlines**: Ensures all files end with a newline
 
-These hooks typically complete in seconds, though execution time varies based on
-the number of affected files and test complexity.
+These hooks complete in seconds, providing immediate feedback on code quality.
 
 #### Pre-push Hooks (Comprehensive)
 
