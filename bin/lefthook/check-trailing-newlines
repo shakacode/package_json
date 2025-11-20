@@ -12,7 +12,8 @@ echo "🔍 Checking trailing newlines on staged files..."
 failed_files=()
 for file in "$@"; do
   if [ -f "$file" ] && [ -s "$file" ]; then
-    if ! tail -c 1 "$file" | grep -q '^$'; then
+    # Files ending with newline will have empty output from tail -c 1
+    if [ -n "$(tail -c 1 "$file")" ]; then
       echo "❌ Missing trailing newline: $file"
       failed_files+=("$file")
     fi
