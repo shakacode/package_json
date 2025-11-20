@@ -279,9 +279,7 @@ automatically installed when you run `bin/setup`.
 
 To manually install or update hooks:
 
-```bash
-bundle exec lefthook install
-```
+    bundle exec lefthook install
 
 #### Pre-commit Hooks (Fast)
 
@@ -305,10 +303,8 @@ This ensures comprehensive verification before sharing your changes.
 
 In exceptional cases, you can bypass hooks:
 
-```bash
-git commit --no-verify  # Skip pre-commit hooks
-git push --no-verify    # Skip pre-push hooks
-```
+    git commit --no-verify  # Skip pre-commit hooks
+    git push --no-verify    # Skip pre-push hooks
 
 **Note:** CI will enforce all checks regardless of local bypasses.
 
