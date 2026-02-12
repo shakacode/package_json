@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Check for trailing newlines on staged files
+set -euo pipefail
+
+if [ $# -eq 0 ]; then
+  echo "✅ No files to check for trailing newlines"
+  exit 0
+fi
+
+echo "🔍 Checking trailing newlines on staged files..."
+
+failed_files=()
+for file in "$@"; do
+  if [ -f "$file" ] && [ -s "$file" ]; then
+    # Files ending with newline will have empty output from tail -c 1
+    if [ -n "$(tail -c 1 "$file")" ]; then
+      echo "❌ Missing trailing newline: $file"
+      failed_files+=("$file")
+    fi
+  fi
+done
+
+if [ ${#failed_files[@]} -gt 0 ]; then
+  echo ""
+  echo "❌ Trailing newline check failed!"
+  echo "💡 Add trailing newlines to: ${failed_files[*]}"
+  echo "🔧 Quick fix: for file in \"\${failed_files[@]}\"; do echo >> \"\$file\"; done"
+  echo "🚫 Skip hook: git commit --no-verify"
+  exit 1
+fi
+
+echo "✅ All files have proper trailing newlines"
