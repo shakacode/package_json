@@ -14,6 +14,10 @@ class PackageJson
 
   class NotImplementedError < Error; end
 
+  # Number of bytes to read from lockfile for version detection
+  # Provides good coverage even with large initial comments
+  LOCKFILE_DETECTION_READ_SIZE = 1000
+
   attr_reader :manager, :directory
 
   def self.fetch_default_fallback_manager
@@ -75,13 +79,54 @@ class PackageJson
   def determine_package_manager(fallback_manager)
     package_manager = fetch("packageManager", nil)
 
-    return fallback_manager if package_manager.nil?
+    return parse_package_manager(package_manager) unless package_manager.nil?
 
+    # If no packageManager property, check for lockfiles
+    lockfile_manager = detect_manager_from_lockfile
+
+    return lockfile_manager unless lockfile_manager.nil?
+
+    # Fall back to the provided fallback manager
+    fallback_manager
+  end
+
+  def parse_package_manager(package_manager)
     name, version = package_manager.split("@")
 
     return determine_yarn_version(version) if name == "yarn"
 
     name.to_sym
+  end
+
+  def detect_manager_from_lockfile
+    # Check for lockfiles in priority order
+    return :bun if File.exist?("#{directory}/bun.lockb")
+    return :pnpm if File.exist?("#{directory}/pnpm-lock.yaml")
+    return detect_yarn_version_from_lockfile if File.exist?("#{directory}/yarn.lock")
+    return :npm if File.exist?("#{directory}/package-lock.json")
+
+    nil
+  end
+
+  def detect_yarn_version_from_lockfile
+    lockfile_path = "#{directory}/yarn.lock"
+
+    # Check file exists to avoid race condition
+    return :yarn_classic unless File.exist?(lockfile_path)
+
+    # Read the first chunk of bytes to determine the version
+    # Yarn Berry lockfiles start with "__metadata:" within the first few lines
+    # Yarn Classic lockfiles use the older format without __metadata:
+    content = File.read(lockfile_path, LOCKFILE_DETECTION_READ_SIZE)
+
+    # Yarn Berry uses __metadata: at the start
+    return :yarn_berry if content.include?("__metadata:")
+
+    # Default to Yarn Classic for older format
+    :yarn_classic
+  rescue StandardError
+    # On error (e.g., corrupted lockfile), default to Yarn Classic
+    :yarn_classic
   end
 
   def determine_yarn_version(version)

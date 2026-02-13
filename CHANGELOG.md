@@ -1,5 +1,15 @@
 ## [Unreleased]
 
+### Added
+
+- Automatic package manager detection from lockfiles when `packageManager`
+  property is not set. Detection priority: `bun.lockb`, `pnpm-lock.yaml`,
+  `yarn.lock` (with automatic Yarn Berry vs Classic detection),
+  `package-lock.json`. Falls back to `PACKAGE_JSON_FALLBACK_MANAGER` environment
+  variable or npm when no lockfile is found
+  ([PR 42](https://github.com/shakacode/package_json/pull/42) by
+  [justin808](https://github.com/justin808))
+
 ## [0.2.0] - 2025-11-06
 
 ### Added
