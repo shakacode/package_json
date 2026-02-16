@@ -1,5 +1,6 @@
 class PackageJson
   VERSION: String
+  LOCKFILE_DETECTION_READ_SIZE: Integer
 
   class Error < StandardError
   end
