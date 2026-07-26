@@ -5,6 +5,7 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in package_json.gemspec
 gemspec
 
+gem "lefthook", require: false
 gem "rake", "~> 13.0"
 gem "rspec", "~> 3.0"
 gem "rubocop", "< 1.51" # TODO: this version dropped support for Ruby 2.6

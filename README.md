@@ -271,6 +271,43 @@ release a new version, update the version number in `version.rb`, and then tag
 the commit with the version prefixed with a `v`, which will trigger the release
 workflow to publish the new version to [rubygems.org](https://rubygems.org).
 
+### Git Hooks
+
+This project uses [Lefthook](https://github.com/evilmartians/lefthook) to manage
+Git hooks, providing fast and efficient pre-commit checks. Hooks are
+automatically installed when you run `bin/setup`.
+
+To manually install or update hooks:
+
+    bundle exec lefthook install
+
+#### Pre-commit Hooks (Fast)
+
+The pre-commit hooks run in parallel on staged files only:
+
+- **RuboCop**: Lints staged Ruby files with auto-fix suggestions
+- **Trailing Newlines**: Ensures all files end with a newline
+
+These hooks complete in seconds, providing immediate feedback on code quality.
+
+#### Pre-push Hooks (Comprehensive)
+
+Before pushing to remote, Lefthook runs the full test suite in parallel:
+
+- **Full RuboCop**: Lints entire codebase
+- **Full RSpec**: Runs all tests
+
+This ensures comprehensive verification before sharing your changes.
+
+#### Bypassing Hooks
+
+In exceptional cases, you can bypass hooks:
+
+    git commit --no-verify  # Skip pre-commit hooks
+    git push --no-verify    # Skip pre-push hooks
+
+**Note:** CI will enforce all checks regardless of local bypasses.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
