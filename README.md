@@ -85,10 +85,18 @@ in the `package.json`.
 > `package.json`, and it is up to the developer to ensure that results in the
 > desired package manager actually running.
 
-If the `packageManager` property is not present, then the fallback manager will
-be used; this defaults to the value of the `PACKAGE_JSON_FALLBACK_MANAGER`
-environment variable or otherwise `npm`. You can also provide a specific
-fallback manager:
+If the `packageManager` property is not present, the gem will automatically
+detect which package manager to use by checking for lockfiles in this priority
+order:
+
+1. `bun.lockb` - Bun
+2. `pnpm-lock.yaml` - pnpm
+3. `yarn.lock` - Yarn (Berry or Classic, determined by file format)
+4. `package-lock.json` - npm
+
+If no lockfile is found, then the fallback manager will be used; this defaults
+to the value of the `PACKAGE_JSON_FALLBACK_MANAGER` environment variable or
+otherwise `npm`. You can also provide a specific fallback manager:
 
 ```ruby
 PackageJson.read(fallback_manager: :pnpm)

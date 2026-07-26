@@ -199,6 +199,7 @@ Metrics/AbcSize:
 Metrics/ClassLength:
   Exclude:
     - 'spec/**/*'
+    - 'lib/package_json.rb'
 
 Naming/MemoizedInstanceVariableName:
   EnforcedStyleForLeadingUnderscores: optional
